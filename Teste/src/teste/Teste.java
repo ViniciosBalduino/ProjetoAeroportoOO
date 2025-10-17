@@ -33,7 +33,7 @@ public class Teste {
         while (opcaoUsuario != 9) {
             opcaoUsuario = this.menuInicial();
             switch (opcaoUsuario) {
-                case 0:
+                case 1:
                     System.out.println("\n---- Logando como usuario ----");
                     System.out.println("Login: ");
                     String login = scanner.nextLine();
@@ -51,7 +51,7 @@ public class Teste {
                     }
                     break;
 
-                case 1:
+                case 2:
                     System.out.println("\n---- Logando como admnistrador ----");
                     System.out.println("Login: ");
                     String loginAdm = scanner.nextLine();
@@ -69,7 +69,7 @@ public class Teste {
                     }
                     break;
 
-                case 2:
+                case 3:
                     System.out.println("\n---- Fazendo seu cadastro ----");
                     Passageiro novoPassageiro = new Passageiro();
                     System.out.println("Digite seu nome: ");
@@ -93,16 +93,18 @@ public class Teste {
                         System.out.println("\nInfelizmente não comportamos mais nenhum usuário. Outro dia voce volta.");
                     }
                     break;
-
-                case 3:
+                    
+                case 4:
                     System.out.println("\n---- Consultando Voos ----");
                     System.out.println(voos.mostrarTodos());
                     System.out.println("\nPrescione  a tecla \"ENTER\" para retornar ao menu anterior");
                     scanner.nextLine();                   
                     break;
+                    
                 case 9:
                     System.out.println("Cancelando a interacao");
                     break;
+                    
                 default:
                     System.out.println("\nEscolha uma opcao valida");
                     break;
@@ -117,10 +119,10 @@ public class Teste {
         menu += "\n=========================================\n";
         menu += "====== SEJA BEM VINDO AO AEROPORTO ======";
         menu += "\n=========================================\n";
-        menu += "\n0 - Entrar como usuario.";
-        menu += "\n1 - Entrar como administrador.";
-        menu += "\n2 - Fazer seu cadastro.";
-        menu += "\n3 - Consultar voos.";
+        menu += "\n1 - Entrar como usuario.";
+        menu += "\n2 - Entrar como administrador.";
+        menu += "\n3 - Fazer seu cadastro.";
+        menu += "\n4 - Consultar voos.";
         menu += "\n9 - Sair do sistema.\n";
         menu += "\nQual sua opcao? R: ";
 
@@ -135,10 +137,11 @@ public class Teste {
         menu += "\n=========================================\n";
         menu += "== SEJA BEM VINDO AO MENU DE PASSAGEIRO =";
         menu += "\n=========================================\n";
-        menu += "\n0 - Para comprar uma passagem.";
-        menu += "\n1 - Listar seu historico de passagens.";
-        menu += "\n2 - Alterar alguma passagem.";
-        menu += "\n3 - Alterar algum dado pessoal.";
+        menu += "\n1 - Para comprar uma passagem.";
+        menu += "\n2 - Listar seu historico de passagens.";
+        menu += "\n3 - Alterar alguma passagem.";
+        menu += "\n4 - Fazer check-in.";
+        menu += "\n5 - Alterar algum dado pessoal.";
         menu += "\n9 - Para sair do menu\n";
         menu += "\nQual sua opcao ? R: ";
 
@@ -153,9 +156,9 @@ public class Teste {
         menu += "\n=========================================\n";
         menu += "= SEJA BEM VINDO AO MENU DE CORPORATIVO =";
         menu += "\n=========================================\n";
-        menu += "\n0 - Para comprar uma passagem.";
-        menu += "\n1 - Listar seu historico de passagens.";
-        menu += "\n2 - Alterar alguma passagem.";
+        menu += "\n1 - Tratamento de passageiros.";
+        menu += "\n1 - Tratamento de voos.";
+        menu += "\n2 - Tratamento de companhias aereas.";
         menu += "\n3 - Alterar algum dado pessoal.";
         menu += "\n9 - Para sair do menu\n";
         menu += "\nQual sua opcao ? R: ";
@@ -172,24 +175,30 @@ public class Teste {
         while (opcaoUsuario != 9) {
             opcaoUsuario = this.menuPassageiro();
             switch (opcaoUsuario) {
-                case 0:
-
-                    System.out.println("0 - Para comprar uma passagem");
-                    break;
-
                 case 1:
-                    System.out.println("1 - Listar seu historico de passagens");
+
+                    System.out.println("1 - Para comprar uma passagem");
                     break;
 
                 case 2:
-                    System.out.println("2 - Alterar alguma passagem");
-
+                    System.out.println("2 - Listar seu historico de passagens");
                     break;
 
                 case 3:
-                    System.out.println("3 - Alterar algum dado pessoal");
+                    System.out.println("3 - Alterar alguma passagem");
+
+                    break;
+
+                case 4:
+                    System.out.println("4 - Fazer check-in.");
                     
                     break;
+                    
+                case 5:
+                    System.out.println("5 - Alterar algum dado pessoal.");
+                    
+                    break;
+                    
                 case 9:
                     System.out.println("sair");
                     break;
