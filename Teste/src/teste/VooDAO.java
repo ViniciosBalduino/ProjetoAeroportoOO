@@ -58,6 +58,24 @@ public class VooDAO {
         return selecaoVoos;
     }
     
+    public Voo buscarVooPorDestinoString(String DestinoVoo){
+        for(int i=0; i<voos.length; i++){
+            if(voos[i]!=null && voos[i].getDestino().toUpperCase().equals((DestinoVoo).toUpperCase())){
+                return voos[i];
+            }
+        }
+        return null;
+    }
+    
+        public Voo buscarVooPorPartidaString(String PartidaVoo){
+        for(int i=0; i<voos.length; i++){
+            if(voos[i]!=null && voos[i].getOrigem().toUpperCase().equals((PartidaVoo).toUpperCase())){
+                return voos[i];
+            }
+        }
+        return null;
+    }
+    
     public Voo buscarRetornarVooPorID(String IDVoo){
         for(int i=0; i<voos.length; i++){
             if(voos[i]!=null && voos[i].getId().toUpperCase().equals((IDVoo).toUpperCase())){

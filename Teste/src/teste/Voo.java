@@ -40,6 +40,8 @@ public class Voo {
         }
         this.dataCriacao = LocalDate.now();
     }
+    
+    public Voo(){};
 
     public String getId() {
         return id;
