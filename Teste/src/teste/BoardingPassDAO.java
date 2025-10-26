@@ -11,7 +11,7 @@ package teste;
 public class BoardingPassDAO {
     BoardingPass[] boardingPasses = new BoardingPass[60];
     
-    public boolean adicionaDespachoBagagem(BoardingPass boarding){
+    public boolean adicionaBoardingPass(BoardingPass boarding){
         int posicao = posicaoLivre();
         if(posicao != -1){
             boardingPasses[posicao] = boarding;

@@ -31,6 +31,10 @@ public class Ticket {
     public int getId(){
         return id;
     }
+    
+    public Voo getVoo(){
+        return voo;
+    }
 
     public int getValor() {
         return valor;

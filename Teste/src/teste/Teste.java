@@ -519,13 +519,25 @@ public class Teste {
                     break;
 
                 case 4:
-                    System.out.println("4 - Fazer check-in.");
-
+                    //Faz Check-In
+                    System.out.println("Esses sao seus tickets disponiveis para check-in: ");
+                    Passageiro passLogado = Util.getPassageiroLogado();
+                    tickets.mostrarTicketsPorPassageiro(passLogado.getId());
+                    System.out.println("Digite o codigo do ticket escolhido: ");
+                    String codigoTicket = scanner.nextLine();
+                    Ticket ticketEscolhido = tickets.buscaTicket(codigoTicket);
+                    VooAssentos assentoCheckIn = vooAssentos.buscarAssentoPorVooEPassageiro(ticketEscolhido.getVoo().getId(), passLogado.getId());
+                    if (ticketEscolhido.getVoo().getData().isBefore(LocalDate.now().plusDays(1))){
+                        Checkin novoCheckin = new Checkin(ticketEscolhido, passLogado.getDocumento());
+                        checkins.adicionaCheckin(novoCheckin);
+                        BoardingPass novoBoardingPass = new BoardingPass(passLogado, ticketEscolhido.getVoo(), ticketEscolhido, assentoCheckIn);
+                        boardingPasses.adicionaBoardingPass(novoBoardingPass);
+                        System.out.println("Check-in realizado! Seu cartão de embarque:\n" + novoBoardingPass.toString());
+                    }
                     break;
 
                 case 5:
                     System.out.println("5 - Alterar algum dado pessoal.");
-
                     break;
 
                 case 9:
@@ -557,6 +569,12 @@ public class Teste {
                                 break;
                             case 2:
                                 System.out.println("Recuperar senha de passageiro. Insira o documento");
+                                String documentoPassageiro = scanner.nextLine();
+                                for(Passageiro passageiro: passageiros.passageiros){
+                                    if(passageiro.getDocumento().equals(documentoPassageiro)){
+                                        System.out.println("Sua senha e: " + passageiro.getSenha());
+                                    }
+                                }
                                 break;
                             case 3:
                                 System.out.println("3 - Excluir um passageiro."); //Excluir

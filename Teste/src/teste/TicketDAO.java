@@ -21,14 +21,18 @@ public class TicketDAO {
         }
     }
     
-    public void buscaTicket(String codigoTicket){
+    public Ticket buscaTicket(String codigoTicket){
+        Ticket ticketEncontrado = null;
         for(Ticket ticket: tickets){
-            if(ticket.getCodigoTicket() == codigoTicket)
+            if(ticket.getCodigoTicket() == codigoTicket){
                 System.out.println(ticket.toString());
+            }
             else{
                 System.out.println("Ticket nao encontrado.");
+                return null;
             }
         }
+        return ticketEncontrado;
     }
     
     public String mostrarTicketsPorPassageiro(int idPassageiro){

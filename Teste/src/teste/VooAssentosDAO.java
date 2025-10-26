@@ -39,6 +39,17 @@ public class VooAssentosDAO {
         return assentosDisponiveis;
     }
     
+    public VooAssentos buscarAssentoPorVooEPassageiro(String idVoo, int idPassageiro) {
+        for (int i = 0; i < vooAssentos.length; i++) {
+            if (vooAssentos[i] != null &&
+                vooAssentos[i].getIdVoo().equals(idVoo) &&
+                vooAssentos[i].getIdPassageiro() == idPassageiro) {
+                return vooAssentos[i];
+            }
+        }
+        return null;
+    }
+    
     public String buscarvooAssentosPorID(String idAssento){
         boolean vazio = true;
         String selecaoAssentos = "";
