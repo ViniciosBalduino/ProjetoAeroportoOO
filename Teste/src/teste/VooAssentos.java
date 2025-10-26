@@ -27,6 +27,7 @@ public class VooAssentos {
         }
         this.idAssento = voo.getId() + "F" + i + "A" +(((serial++)%6)+1);
         this.idVoo = voo.getId();
+        this.idPassageiro = passageiro.getId();
         this.valor = serial%2 == 0 ? 100 : 50;
         this.dataCriacao = LocalDate.now();
         this.dataModificacao = LocalDate.now();

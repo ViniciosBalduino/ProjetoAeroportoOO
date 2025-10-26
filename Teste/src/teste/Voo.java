@@ -142,6 +142,7 @@ public class Voo {
         voo += "\nDestino em = " + this.destino;
         voo += "\nDia do voo = " + this.data;
         voo += "\nTempo do voo = " + this.duracao;
+        voo += "\nCapacidade do voo = " + this.capacidade;
         voo += "\nStatus = " + this.estado;
         voo += "\n";
         return voo;

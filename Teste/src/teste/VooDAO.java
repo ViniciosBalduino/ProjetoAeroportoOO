@@ -13,7 +13,7 @@ import java.time.Month;
  * @author vinic
  */
 public class VooDAO {
-    Voo[] voos = new Voo[5];
+    Voo[] voos = new Voo[15];
 
     public VooDAO(CompAereaDAO companhias) {
                         
@@ -24,11 +24,19 @@ public class VooDAO {
         v1.setDuracao(LocalTime.of(1, 0));
         v1.setCapacidade(5);
         this.adicionaVoo(v1);
+        
+        /*Voo v4 = new Voo(companhias.buscarRetornarCompSigla(("Gal").toUpperCase()));
+        v1.setOrigem("Uberaba");
+        v1.setDestino("Uberlandia");
+        v1.setData(LocalDate.of(2025, 10, 10));
+        v1.setDuracao(LocalTime.of(1, 0));
+        v1.setCapacidade(5);
+        this.adicionaVoo(v4);*/
                
         Voo v2 = new Voo(companhias.buscarRetornarCompSigla(("Gal 2").toUpperCase()));
         v2.setOrigem("Delta");
         v2.setDestino("Araguari");
-        v2.setData(LocalDate.of(2025, 10, 30));
+        v2.setData(LocalDate.of(2025, 10, 10));
         v2.setDuracao(LocalTime.of(0, 10));
         v2.setCapacidade(3);
         this.adicionaVoo(v2);

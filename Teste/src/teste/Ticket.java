@@ -15,21 +15,31 @@ public class Ticket {
     private int valor;
     private Voo voo;
     private Passageiro passageiro;
+    private VooAssentos vooAssentos;
     private String codigoTicket;
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
     
-    public Ticket(Passageiro passageiro, Voo voo){
+    public Ticket(Passageiro passageiro, Voo voo, VooAssentos vooAssentos){
         this.id = Ticket.serial++;
         this.voo = voo;
         this.passageiro = passageiro;
         this.codigoTicket = "T-" + String.valueOf(id) + voo.getId() + "-00";
+        this.vooAssentos = vooAssentos;
         this.dataCriacao = LocalDate.now();
         this.dataModificacao = LocalDate.now();
     }
     
     public int getId(){
         return id;
+    }
+
+    public Passageiro getPassageiro() {
+        return passageiro;
+    }
+
+    public void setPassageiro(Passageiro passageiro) {
+        this.passageiro = passageiro;
     }
     
     public Voo getVoo(){
@@ -60,13 +70,13 @@ public class Ticket {
     @Override
     public String toString(){
         
-        String ticket = "--------------------------------";
+        String ticket = "\n--------------------------------";
         ticket += "\nCodigo = " + this.codigoTicket;
         ticket += "\nVoo = " + this.voo.getOrigem() + "-->" + this.voo.getDestino();
         ticket += "\nPassageiro = " + this.passageiro.getNome();
         ticket += "\nValor = " + this.valor;
         ticket += "\nCompra efetuada em = " + this.dataCriacao;
-        ticket += "--------------------------------";
+        ticket += "\n--------------------------------\n";
         
         return ticket;
     }

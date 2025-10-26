@@ -29,8 +29,8 @@ public class PassageiroDAO {
         p2.setNome("Flavio Sauro");
         p2.setNascimento(LocalDate.of(1996, 4, 26));
         p2.setDocumento("96385274165");
-        p2.setLogin("FlavinhoDoPneu");
-        p2.setSenha("Flavio321");
+        p2.setLogin("123");
+        p2.setSenha("123");
         this.adicionaPassageiro(p2);
         
         Passageiro p3 = new Passageiro();

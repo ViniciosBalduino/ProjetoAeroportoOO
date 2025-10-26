@@ -13,27 +13,29 @@ import java.time.Month;
  * @author vinic
  */
 public class VooAssentosDAO {
-    VooAssentos[] vooAssentos = new VooAssentos[5];
+    VooAssentos[] vooAssentos = new VooAssentos[100];
 
     public VooAssentosDAO(VooDAO voos, PassageiroDAO passageiros) {
         
         VooAssentos v1 = new VooAssentos(voos.buscarRetornarVooPorID("Gal-V1"), passageiros.buscarRetornarPassageiroPorID(1));
-        v1.setIdPassageiro(passageiros.buscarRetornarPassageiroPorID(1).getId());
+        //v1.setIdPassageiro(passageiros.buscarRetornarPassageiroPorID(1).getId());
+        //System.out.println(v1);
         this.adicionaVooAssentos(v1);
       
         VooAssentos v2 = new VooAssentos(voos.buscarRetornarVooPorID("Gal-V1"), passageiros.buscarRetornarPassageiroPorID(2));
-        v2.setIdPassageiro(passageiros.buscarRetornarPassageiroPorID(2).getId());
+        //v2.setIdPassageiro(passageiros.buscarRetornarPassageiroPorID(2).getId());
         this.adicionaVooAssentos(v2);
         
         VooAssentos v3 = new VooAssentos(voos.buscarRetornarVooPorID("Gal 2-V2"), passageiros.buscarRetornarPassageiroPorID(3));
-        v1.setIdPassageiro(passageiros.buscarRetornarPassageiroPorID(3).getId());
+        //v1.setIdPassageiro(passageiros.buscarRetornarPassageiroPorID(3).getId());
         this.adicionaVooAssentos(v3);
+        //System.out.println(vooAssentos[0]);
     }
 
     public int contarAssentosPorVoo(String idVoo){
         int assentosDisponiveis = 0;
         for(int i=0; i < vooAssentos.length; i++){
-            if(vooAssentos[i].getIdVoo() == idVoo)
+            if(vooAssentos[i] != null && vooAssentos[i].getIdVoo().toLowerCase().equals(idVoo.toLowerCase()))
                 assentosDisponiveis++;
         }
         return assentosDisponiveis;
@@ -42,7 +44,7 @@ public class VooAssentosDAO {
     public VooAssentos buscarAssentoPorVooEPassageiro(String idVoo, int idPassageiro) {
         for (int i = 0; i < vooAssentos.length; i++) {
             if (vooAssentos[i] != null &&
-                vooAssentos[i].getIdVoo().equals(idVoo) &&
+                vooAssentos[i].getIdVoo().toLowerCase().equals(idVoo.toLowerCase()) &&
                 vooAssentos[i].getIdPassageiro() == idPassageiro) {
                 return vooAssentos[i];
             }
@@ -63,6 +65,21 @@ public class VooAssentosDAO {
             selecaoAssentos = "Nao existe assento com este ID cadastrado";
         }
         return selecaoAssentos;
+    }
+    
+    public String mostrarTodosAssentosPorVoo(Voo voo){
+        boolean vazio = true;
+        String todosPassageiros = "";
+        for(int i=0; i<vooAssentos.length; i++){
+            if(vooAssentos[i] != null && vooAssentos[i].getIdVoo().toLowerCase().equals(voo.getId().toLowerCase())){
+                todosPassageiros += vooAssentos[i].toString();
+                vazio = false;
+            }
+        }
+        if(vazio){
+            todosPassageiros += "Nao existe nenhum assento neste voo cadastrado";
+        } 
+        return todosPassageiros;
     }
     
     public String mostrarTodos(){
