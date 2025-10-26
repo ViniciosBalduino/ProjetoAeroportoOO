@@ -14,8 +14,14 @@ import java.time.Month;
  */
 public class VooAssentosDAO {
     VooAssentos[] vooAssentos = new VooAssentos[100];
+    
+    private VooDAO voos;
+    private PassageiroDAO passageiros;
 
     public VooAssentosDAO(VooDAO voos, PassageiroDAO passageiros) {
+        
+        this.voos = voos;
+        this.passageiros = passageiros;
         
         VooAssentos v1 = new VooAssentos(voos.buscarRetornarVooPorID("Gal-V1"), passageiros.buscarRetornarPassageiroPorID(1));
         //v1.setIdPassageiro(passageiros.buscarRetornarPassageiroPorID(1).getId());
@@ -80,6 +86,93 @@ public class VooAssentosDAO {
             todosPassageiros += "Nao existe nenhum assento neste voo cadastrado";
         } 
         return todosPassageiros;
+    }
+    
+    //Relatorio 1: Passageiros que deixaram um determinado aeroporto.
+    public String gerarRelatorioPassageirosPorOrigem(String origem) {
+        String relatorio = "--- Passageiros que sairam de " + origem.toUpperCase() + " ---\n";
+        boolean encontrou = false;
+
+        // Itera por todos os assentos vendidos
+        for (int i = 0; i < vooAssentos.length; i++) {
+            if (vooAssentos[i] != null) {
+                VooAssentos assento = vooAssentos[i];
+                // Busca o Voo deste assento
+                Voo voo = this.voos.buscarRetornarVooPorID(assento.getIdVoo()); //
+
+                // Verifica se o Voo existe e se a origem bate
+                if (voo != null && voo.getOrigem().equalsIgnoreCase(origem)) {
+                    // Busca o Passageiro deste assento
+                    Passageiro p = this.passageiros.buscarRetornarPassageiroPorID(assento.getIdPassageiro()); //
+
+                    if (p != null) {
+                        relatorio += "ID: " + p.getId() + ", Nome: " + p.getNome()
+                                + ", Documento: " + p.getDocumento()
+                                + " (Voo: " + voo.getId() + ")\n";
+                        encontrou = true;
+                    }
+                }
+            }
+        }
+
+        if (!encontrou) {
+            return "Nenhum passageiro encontrado para esta origem.";
+        }
+        return relatorio;
+    }
+    
+    public String gerarRelatorioPassageirosPorDestino(String destino) {
+        String relatorio = "--- Passageiros que chegaram em " + destino.toUpperCase() + " ---\n";
+        boolean encontrou = false;
+
+        for (int i = 0; i < vooAssentos.length; i++) {
+            if (vooAssentos[i] != null) {
+                VooAssentos assento = vooAssentos[i];
+                Voo voo = this.voos.buscarRetornarVooPorID(assento.getIdVoo());
+
+                // A unica mudanca e aqui:
+                if (voo != null && voo.getDestino().equalsIgnoreCase(destino)) {
+                    Passageiro p = this.passageiros.buscarRetornarPassageiroPorID(assento.getIdPassageiro());
+
+                    if (p != null) {
+                        relatorio += "ID: " + p.getId() + ", Nome: " + p.getNome()
+                                + ", Documento: " + p.getDocumento()
+                                + " (Voo: " + voo.getId() + ")\n";
+                        encontrou = true;
+                    }
+                }
+            }
+        }
+
+        if (!encontrou) {
+            return "Nenhum passageiro encontrado para este destino.";
+        }
+        return relatorio;
+    }
+    
+    public int calcularArrecadacao(String siglaCompanhia, LocalDate inicio, LocalDate fim) {
+        int totalArrecadado = 0;
+
+        for (int i = 0; i < vooAssentos.length; i++) {
+            if (vooAssentos[i] != null) {
+                VooAssentos assento = vooAssentos[i];
+                Voo voo = this.voos.buscarRetornarVooPorID(assento.getIdVoo());
+
+                if (voo != null) {
+                    boolean companhiaMatch = voo.getCompanhia().getAbreviacao().equalsIgnoreCase(siglaCompanhia);
+
+                    LocalDate dataVenda = assento.getDataCriacao();
+
+                    // Verifica se a data esta no intervalo (inclusivo)
+                    boolean dataMatch = (!dataVenda.isBefore(inicio)) && (!dataVenda.isAfter(fim));
+
+                    if (companhiaMatch && dataMatch) {
+                        totalArrecadado += assento.getValor();
+                    }
+                }
+            }
+        }
+        return totalArrecadado;
     }
     
     public String mostrarTodos(){

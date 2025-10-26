@@ -19,7 +19,7 @@ public class Checkin {
     private LocalDate dataModificacao;
     
     public Checkin(Ticket ticket, String documento){
-        this.id = Checkin.serial++;
+        this.id = ++Checkin.serial;
         this.dataCriacao = LocalDate.now();
         this.dataModificacao = LocalDate.now();
     }

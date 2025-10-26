@@ -25,7 +25,7 @@ public class VooAssentos {
         if((serial)%6 == 0){
             i++;
         }
-        this.idAssento = voo.getId() + "F" + i + "A" +(((serial++)%6)+1);
+        this.idAssento = voo.getId() + "F" + i + "A" +(((++serial)%6)+1);
         this.idVoo = voo.getId();
         this.idPassageiro = passageiro.getId();
         this.valor = serial%2 == 0 ? 100 : 50;

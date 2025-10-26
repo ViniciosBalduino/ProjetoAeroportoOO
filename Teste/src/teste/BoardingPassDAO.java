@@ -21,6 +21,18 @@ public class BoardingPassDAO {
         }
     }
     
+    public BoardingPass buscarPorPassageiroEVoo(int idPassageiro, String idVoo) {
+        
+        for (int i = 0; i < boardingPasses.length; i++) {
+            if (boardingPasses[i] != null &&
+                boardingPasses[i].getPassageiro().getId() == idPassageiro &&
+                boardingPasses[i].getVoo().getId().equals(idVoo)){
+                return boardingPasses[i];
+            }
+        }
+        return null;
+    }
+    
     public String mostrarTodos(){
         boolean vazio = true;
         String todosBoardingPasses = "";

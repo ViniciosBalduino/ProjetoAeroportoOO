@@ -21,13 +21,14 @@ public class Ticket {
     private LocalDate dataModificacao;
     
     public Ticket(Passageiro passageiro, Voo voo, VooAssentos vooAssentos){
-        this.id = Ticket.serial++;
+        this.id = ++Ticket.serial;
         this.voo = voo;
         this.passageiro = passageiro;
         this.codigoTicket = "T-" + String.valueOf(id) + voo.getId() + "-00";
         this.vooAssentos = vooAssentos;
         this.dataCriacao = LocalDate.now();
         this.dataModificacao = LocalDate.now();
+        this.valor = serial % 2 == 0 ? 50 : 100;
     }
     
     public int getId(){

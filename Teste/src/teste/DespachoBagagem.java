@@ -19,28 +19,22 @@ public class DespachoBagagem {
     private LocalDate dataModificacao;
     
     public DespachoBagagem(Ticket ticket, String documento){
+        this.id = ++DespachoBagagem.serial;
         this.documento = documento;
         this.ticket = ticket;
-        this.id = DespachoBagagem.serial++;
         this.dataCriacao = LocalDate.now();
         this.dataModificacao = LocalDate.now();
+    }
+    
+    public int getId(){
+        return id;
     }
 
     public Ticket getTicket() {
         return ticket;
     }
 
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-        this.dataModificacao = LocalDate.now();
-    }
-
     public String getDocumento() {
         return documento;
-    }
-
-    public void setDocumento(String documento) {
-        this.documento = documento;
-        this.dataModificacao = LocalDate.now();
     }
 }
