@@ -20,9 +20,10 @@ public class VooDAO {
         Voo v1 = new Voo(companhias.buscarRetornarCompSigla(("Gal").toUpperCase()));
         v1.setOrigem("Uberaba");
         v1.setDestino("Uberlandia");
-        v1.setData(LocalDate.of(2025, 10, 30));
+        v1.setData(LocalDate.of(2025, 10, 26));
         v1.setDuracao(LocalTime.of(1, 0));
         v1.setCapacidade(5);
+        v1.setEstado("programado");
         this.adicionaVoo(v1);
         
         /*Voo v4 = new Voo(companhias.buscarRetornarCompSigla(("Gal").toUpperCase()));
@@ -36,17 +37,19 @@ public class VooDAO {
         Voo v2 = new Voo(companhias.buscarRetornarCompSigla(("Gal 2").toUpperCase()));
         v2.setOrigem("Delta");
         v2.setDestino("Araguari");
-        v2.setData(LocalDate.of(2025, 10, 10));
+        v2.setData(LocalDate.of(2025, 10, 26));
         v2.setDuracao(LocalTime.of(0, 10));
         v2.setCapacidade(3);
+        v2.setEstado("programado");
         this.adicionaVoo(v2);
         
         Voo v3 = new Voo(companhias.buscarRetornarCompSigla(("Gal 3").toUpperCase()));
         v3.setOrigem("Ponte Alta");
         v3.setDestino("Peiropolis");
-        v3.setData(LocalDate.of(2025, 10, 30));
+        v3.setData(LocalDate.of(2025, 10, 27));
         v3.setDuracao(LocalTime.of(01, 0));
         v3.setCapacidade(1);
+        v3.setEstado("programado");
         this.adicionaVoo(v3);
         
     }    

@@ -36,13 +36,26 @@ public class TicketDAO {
             return false;
         }
     }
+    
+    public boolean removeTicketPosCheckIn(String codigoTicket){
+        for(int i=0; i < tickets.length; i++){
+            if(tickets[i].getCodigoTicket().toLowerCase().trim().equals(codigoTicket.toLowerCase().trim())){
+                tickets[i] = null;
+                System.out.println("\nCheck-in realizado, entao ticket excluido.");
+                return true;
+            }
+        }
+        return false;
+    }
 
     public Ticket buscaTicket(String codigoTicket) {
+        Ticket ticketEncontrado;
         for (Ticket ticket : tickets) {
-            //System.out.println(ticket.getCodigoTicket());
-            if (ticket.getCodigoTicket().toLowerCase().trim().equals(codigoTicket.toLowerCase().trim())) {
-                System.out.println("ticket encontrado");
-                return ticket;
+            if (ticket != null && ticket.getCodigoTicket().toLowerCase().trim().equals(codigoTicket.toLowerCase().trim())) {
+                System.out.println("Ticket encontrado");
+                System.out.println(ticket.toString());
+                ticketEncontrado = ticket;
+                return ticketEncontrado;
             } 
         }
         System.out.println("Ticket nao encontrado.");
@@ -50,7 +63,6 @@ public class TicketDAO {
     }
     
     public Ticket buscaTicketPassageiroVoo(int codigoPassageiro, String codigoVoo) {
-        //Ticket ticketEncontrado = null;
         for (Ticket ticket : tickets) {
             if (ticket.getPassageiro().getId() == codigoPassageiro && ticket.getVoo().getId().toLowerCase().equals(codigoVoo)) {
                 System.out.println("Ticket encontrado");
@@ -67,17 +79,6 @@ public class TicketDAO {
         String ticketsPassageiro = "";
         for (Ticket ticket : tickets) {
             if (ticket != null && ticket.getPassageiro().getId() == idPassageiro) {
-                ticketsPassageiro += ticket;
-            }
-        }
-        return ticketsPassageiro;
-    }
-
-    public String mostrarTicketsValidosPorPassageiro(int idPassageiro) {
-        String ticketsPassageiro = "";
-        LocalDate dataAtual = LocalDate.now();
-        for (Ticket ticket : tickets) {
-            if (ticket != null && ticket.getPassageiro().getId() == idPassageiro && ticket.getVoo().getData().isAfter(dataAtual)) {
                 ticketsPassageiro += ticket;
             }
         }

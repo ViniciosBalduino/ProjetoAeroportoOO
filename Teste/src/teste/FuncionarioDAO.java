@@ -37,6 +37,14 @@ public class FuncionarioDAO {
         f3.setLogin("carla");
         f3.setSenha("carla123");
         this.adicionaFuncionario(f3);
+        
+        Funcionario f4 = new Funcionario();
+        f4.setNome("joao");
+        f4.setNascimento(LocalDate.of(2001, 1, 12));
+        f4.setDocumento("99900011122");
+        f4.setLogin("123");
+        f4.setSenha("123");
+        this.adicionaFuncionario(f4);
     }
     
     public Funcionario buscarLoginFuncionario(String login, String senha){
