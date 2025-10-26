@@ -11,10 +11,15 @@ public class Teste {
 
     AeroportoDAO aeroportos = new AeroportoDAO();
     AdministradorDAO administradores = new AdministradorDAO();
+    FuncionarioDAO funcionarios = new FuncionarioDAO();
     CompAereaDAO companhias = new CompAereaDAO();
     VooDAO voos = new VooDAO(companhias);
     PassageiroDAO passageiros = new PassageiroDAO();
     VooAssentosDAO vooAssentos = new VooAssentosDAO(voos, passageiros);
+    TicketDAO tickets = new TicketDAO();
+    CheckinDAO checkins = new CheckinDAO();
+    DespachoBagagemDAO despachos = new DespachoBagagemDAO();
+    BoardingPassDAO boardingPasses = new BoardingPassDAO();
     Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -35,7 +40,7 @@ public class Teste {
             opcaoUsuario = this.menuInicial();
             switch (opcaoUsuario) {
                 case 1:
-                    System.out.println("\n---- Logando como usuario ----");
+                    System.out.println("\n---- Logando como Passageiro ----");
                     System.out.println("Login: ");
                     String login = scanner.nextLine();
                     System.out.println("Senha:");
@@ -48,11 +53,28 @@ public class Teste {
                         System.out.println("Passageiro logado e: " + Util.getPassageiroLogado().toString());
                         programaPassageiro();
                     } else {
-                        System.out.println("\nLogin Invalido. Tente novamente");
+                        System.out.println("\nLogin Invalido. Tente novamente.");
                     }
                     break;
-
-                case 2:
+                case 2: {
+                    System.out.println("\n---- Logando como Funcionario ----");
+                    System.out.println("Login: ");
+                    String loginFunc = scanner.nextLine();
+                    System.out.println("Senha:");
+                    String senhaFunc = scanner.nextLine();
+                    Funcionario funcionarioLogado = funcionarios.buscarLoginFuncionario(loginFunc, senhaFunc);
+                    
+                    if(funcionarioLogado != null){
+                        System.out.println("\n---- Funcionario logado ----");
+                        Util.setFuncionarioLogado(funcionarioLogado);
+                        System.out.println("Funcionario logado e: " + Util.getFuncionarioLogado().toString());
+                        programaFuncionario();
+                    } else {
+                        System.out.println("\nLogin invalido. Tente novamente.");
+                    }
+                    break;
+                }
+                case 3:
                     System.out.println("\n---- Logando como admnistrador ----");
                     System.out.println("Login: ");
                     String loginAdm = scanner.nextLine();
@@ -66,11 +88,11 @@ public class Teste {
                         System.out.println("Administrador logado e: " + Util.getAdministradorLogado().toString());
                         programaAdministrador();
                     } else {
-                        System.out.println("\nLogin Invalido. Tente novamente");
+                        System.out.println("\nLogin Invalido. Tente novamente.");
                     }
                     break;
 
-                case 3:
+                case 4:
                     System.out.println("\n---- Fazendo seu cadastro ----");
                     Passageiro novoPassageiro = new Passageiro();
                     System.out.println("Digite seu nome: ");
@@ -94,9 +116,9 @@ public class Teste {
                         System.out.println("\nInfelizmente não comportamos mais nenhum usuário. Outro dia voce volta.");
                     }
                     break;
-
-                case 4:{
-                    System.out.println("\n---- Consultando Voos ----");
+                
+                case 6:{
+                    System.out.println("\n---- Procurando Voos ----");
                     System.out.println(voos.mostrarTodos());
                     int opcaoBuscarVoo = 0;
                     while (opcaoBuscarVoo != 9) {
@@ -105,10 +127,13 @@ public class Teste {
                             case 1: {
                                 System.out.println("Buscar voo por destino\n");
                                 System.out.println("Qual destino desejado? ");
-                                Voo vooPretendido = new Voo();
-                                vooPretendido = voos.buscarVooPorDestinoString(scanner.nextLine());
+                                Voo vooPretendido = voos.buscarVooPorDestinoString(scanner.nextLine());
                                 if (vooPretendido != null) {
                                     System.out.println(vooPretendido.toString());
+                                    if( !(vooAssentos.contarAssentosPorVoo(vooPretendido.getId()) > vooPretendido.getCapacidade()) ){
+                                        System.out.println("\nVoo sem assentos disponiveis, por favor busque outro.");
+                                        break;
+                                    }
                                     System.out.println("\nDeseja comprar a passagem?");
                                     System.out.println("Digite 1 para sim");
                                     System.out.println("Digite 2 para nao");
@@ -141,6 +166,10 @@ public class Teste {
                                                     novoPassageiroLogado = passageiros.buscarLoginPassageiro(novoLogin, novaSenha);
                                                 }
                                                 if (novoPassageiroLogado != null) {
+                                                    VooAssentos novoAssento = new VooAssentos(vooPretendido, novoPassageiroLogado);
+                                                    vooAssentos.adicionaVooAssentos(novoAssento);
+                                                    Ticket novoTicket = new Ticket(novoPassageiroLogado, vooPretendido);
+                                                    tickets.adicionaTicket(novoTicket);
                                                     System.out.println("\nPassagem adquirida com sucesso, a passagem ja se encontra na sua conta\n");
                                                 } else {
                                                     System.out.println("Voce burlou alguma regra e quebrou o codigo, como?");
@@ -184,8 +213,7 @@ public class Teste {
                             case 2: {
                                 System.out.println("Buscar voo por partida");
                                 System.out.println("De onde vai sair? ");
-                                Voo vooPretendido = new Voo();
-                                vooPretendido = voos.buscarVooPorPartidaString(scanner.nextLine());
+                                Voo vooPretendido = voos.buscarVooPorPartidaString(scanner.nextLine());
                                 if (vooPretendido != null) {
                                     System.out.println(vooPretendido.toString());
                                     System.out.println("\nDeseja comprar a passagem?");
@@ -259,6 +287,82 @@ public class Teste {
                                 }
                                 break;
                             }
+                            case 3:
+                                System.out.println("Buscar voo por data.");
+                                System.out.println("Qual data pretendida: ");
+                                Voo vooPretendido = voos.buscarVooPorData(scanner.nextLine());
+                                if (vooPretendido != null) {
+                                    System.out.println(vooPretendido.toString());
+                                    System.out.println("\nDeseja comprar a passagem?");
+                                    System.out.println("Digite 1 para sim");
+                                    System.out.println("Digite 2 para nao");
+                                    int comprarPassagem = Integer.parseInt(scanner.nextLine());
+                                    if (comprarPassagem == 1) {
+                                        System.out.println("\nPassagem adquirida, faca login ou seu cadastro");
+                                        System.out.println("Digite 1 para login");
+                                        System.out.println("Digite 2 para cadastro");
+                                        int formaLogin = Integer.parseInt(scanner.nextLine());
+                                        while (formaLogin != 1 && formaLogin != 2) {
+                                            System.out.println("\nEscolha uma opcao valida ");
+                                            System.out.println("Digite 1 para login");
+                                            System.out.println("Digite 2 para cadastro");
+                                            formaLogin = Integer.parseInt(scanner.nextLine());
+                                        }
+                                        switch (formaLogin) {
+                                            case 1:
+                                                System.out.println("\n---- Logando como usuario ----");
+                                                System.out.println("Login: ");
+                                                String novoLogin = scanner.nextLine();
+                                                System.out.println("Senha:");
+                                                String novaSenha = scanner.nextLine();
+                                                Passageiro novoPassageiroLogado = passageiros.buscarLoginPassageiro(novoLogin, novaSenha);
+                                                while (novoPassageiroLogado == null) {
+                                                    System.out.println("\nLogin Invalido. Tente novamente");
+                                                    System.out.println("Login: ");
+                                                    novoLogin = scanner.nextLine();
+                                                    System.out.println("Senha:");
+                                                    novaSenha = scanner.nextLine();
+                                                    novoPassageiroLogado = passageiros.buscarLoginPassageiro(novoLogin, novaSenha);
+                                                }
+                                                if (novoPassageiroLogado != null) {
+                                                    System.out.println("\nPassagem adquirida com sucesso, a passagem ja se encontra na sua conta\n");
+                                                } else {
+                                                    System.out.println("Voce burlou alguma regra e quebrou o codigo, como?");
+                                                }
+                                                break;
+                                            case 2:
+                                                System.out.println("\n---- Fazendo seu cadastro ----");
+                                                Passageiro novoPassageiroCompra = new Passageiro();
+                                                System.out.println("Digite seu nome: ");
+                                                novoPassageiroCompra.setNome(scanner.nextLine());
+
+                                                System.out.println("Digite sua data Nascimento: (YYYY-MM-DD)");
+                                                novoPassageiroCompra.setNascimento(LocalDate.parse(scanner.nextLine()));
+
+                                                System.out.println("Digite seu documento: ");
+                                                novoPassageiroCompra.setDocumento(scanner.nextLine());
+
+                                                System.out.println("Cadastre seu login: ");
+                                                novoPassageiroCompra.setLogin(scanner.nextLine());
+
+                                                System.out.println("Cadastre sua senha: ");
+                                                novoPassageiroCompra.setSenha(scanner.nextLine());
+
+                                                if (passageiros.adicionaPassageiro(novoPassageiroCompra)) {
+                                                    System.out.println("\nPassageiro Cadastrado com sucesso");
+                                                    System.out.println("\nPassagem adquirida com sucesso, a passagem ja se encontra na sua conta\n");
+                                                } else {
+                                                    System.out.println("\nInfelizmente não comportamos mais nenhum usuário. Outro dia voce volta.");
+                                                }
+                                                break;
+                                        }
+                                    } else if (comprarPassagem == 2) {
+                                        System.out.println("Por que voce quer ver passagens entao? Babaca!");
+                                    }
+                                } else {
+                                    System.out.println("Voo nao encontrado!");
+                                }
+                                break;
                             case 9:
                                 System.out.println("Cancelando a busca");
                                 break;
@@ -266,19 +370,34 @@ public class Teste {
                                 System.out.println("\nEscolha uma opcao valida");
                                 break;
                         }
-                        }
+                    }
                     break;
                     }
+                case 7: {
+                    clearScreen();
+                    System.out.println("\n----- TODOS OS VOOS DISPONIVEIS -----\n");
+                    String todosVoos = voos.mostrarTodos();
+                    System.out.println(todosVoos);
+                    break;
+                }
+                case 8:
+                    System.out.println("Insira o codigo do ticket: ");
+                    String codigoTicket = scanner.nextLine();
+                    tickets.buscaTicket(codigoTicket);
                 case 9:
                     System.out.println("Cancelando a interacao");
                     break;
-
                 default:
                     System.out.println("\nEscolha uma opcao valida");
                     break;
             }
         }
         System.out.println("Saindo do sistema");
+    }
+    
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 
     private int menuInicial() {
@@ -287,10 +406,13 @@ public class Teste {
         menu += "\n=========================================\n";
         menu += "====== SEJA BEM VINDO AO AEROPORTO ======";
         menu += "\n=========================================\n";
-        menu += "\n1 - Entrar como usuario.";
-        menu += "\n2 - Entrar como administrador.";
-        menu += "\n3 - Fazer seu cadastro.";
-        menu += "\n4 - Consultar voos.";
+        menu += "\n1 - Entrar como passageiro.";
+        menu += "\n2 - Entrar como funcionario.";
+        menu += "\n3 - Entrar como administrador.";
+        menu += "\n4 - Fazer seu cadastro.";
+        menu += "\n6 - Procurar voos.";
+        menu += "\n7 - Ver todos os voos.";
+        menu += "\n8 - Conferir reserva.";
         menu += "\n9 - Sair do sistema.\n";
         menu += "\nQual sua opcao? R: ";
 
@@ -307,6 +429,7 @@ public class Teste {
         menu += "\n=========================================\n";
         menu += "\n1 - Buscar voo por destino.";
         menu += "\n2 - Buscar voo por partida.";
+        menu += "\n3 - Buscar voo por data.";
         menu += "\n9 - Sair do sistema.\n";
         menu += "\nQual sua opcao? R: ";
 
@@ -353,6 +476,22 @@ public class Teste {
 
         return Integer.parseInt(scanner.nextLine());
     }
+    
+    private int menuFuncionario(){
+        
+        String menu = "";
+        menu += "\n=========================================\n";
+        menu += "== SEJA BEM VINDO AO MENU DE FUNCIONARIO =";
+        menu += "\n=========================================\n";
+        menu += "\n1 - Registrar entrada no aeroporto.";
+        menu += "\n2 - Registrar entrada no aviao.";
+        menu += "\n9 - Para sair do menu\n";
+        menu += "\nQual sua opcao ? R: ";
+        
+        System.out.println("menu");
+        
+        return Integer.parseInt(scanner.nextLine());
+    }
 
     private void programaPassageiro() {
         int opcaoUsuario = 10;
@@ -361,27 +500,44 @@ public class Teste {
             opcaoUsuario = this.menuPassageiro();
             switch (opcaoUsuario) {
                 case 1:
-
-                    System.out.println("1 - Para comprar uma passagem");
+                    System.out.println(voos.mostrarTodos());
+                    String idVoo = scanner.nextLine();
+                    Voo vooEscolhido = voos.buscarRetornarVooPorID(idVoo);
+                    if (!(vooAssentos.contarAssentosPorVoo(vooEscolhido.getId()) > vooEscolhido.getCapacidade())) {
+                        System.out.println("\nVoo sem assentos disponiveis, por favor busque outro.");
+                        break;
+                    }
+                    Passageiro pLogado = Util.getPassageiroLogado();
+                    Ticket novoTicket = new Ticket(pLogado, vooEscolhido);
+                    VooAssentos assentoNovo = new VooAssentos(vooEscolhido, pLogado);
+                    System.out.println("PASSAGEM COMPRADA COM SUCESSO.");
                     break;
 
                 case 2:
+                    System.out.println(tickets.mostrarTicketsPorPassageiro(Util.getFuncionarioLogado().getId()));
                     System.out.println("2 - Listar seu historico de passagens");
                     break;
 
-                case 3:
-                    System.out.println("3 - Alterar alguma passagem");
-
-                    break;
-
                 case 4:
-                    System.out.println("4 - Fazer check-in.");
-
+                    //Faz Check-In
+                    System.out.println("Esses sao seus tickets disponiveis para check-in: ");
+                    Passageiro passLogado = Util.getPassageiroLogado();
+                    tickets.mostrarTicketsPorPassageiro(passLogado.getId());
+                    System.out.println("Digite o codigo do ticket escolhido: ");
+                    String codigoTicket = scanner.nextLine();
+                    Ticket ticketEscolhido = tickets.buscaTicket(codigoTicket);
+                    VooAssentos assentoCheckIn = vooAssentos.buscarAssentoPorVooEPassageiro(ticketEscolhido.getVoo().getId(), passLogado.getId());
+                    if (ticketEscolhido.getVoo().getData().isBefore(LocalDate.now().plusDays(1))){
+                        Checkin novoCheckin = new Checkin(ticketEscolhido, passLogado.getDocumento());
+                        checkins.adicionaCheckin(novoCheckin);
+                        BoardingPass novoBoardingPass = new BoardingPass(passLogado, ticketEscolhido.getVoo(), ticketEscolhido, assentoCheckIn);
+                        boardingPasses.adicionaBoardingPass(novoBoardingPass);
+                        System.out.println("Check-in realizado! Seu cartão de embarque:\n" + novoBoardingPass.toString());
+                    }
                     break;
 
                 case 5:
                     System.out.println("5 - Alterar algum dado pessoal.");
-
                     break;
 
                 case 9:
@@ -408,16 +564,23 @@ public class Teste {
                     while (opcaoTratarPassageiro != 9) {
                         switch (opcaoTratarPassageiro) {
                             case 1:
-                                System.out.println("1 - Mostrar todos os passageiros.");
+                                System.out.println("Todos os passageiros:");
+                                passageiros.mostrarTodos();
                                 break;
                             case 2:
-                                System.out.println("2 - Recuperar senha de passageiro.");
+                                System.out.println("Recuperar senha de passageiro. Insira o documento");
+                                String documentoPassageiro = scanner.nextLine();
+                                for(Passageiro passageiro: passageiros.passageiros){
+                                    if(passageiro.getDocumento().equals(documentoPassageiro)){
+                                        System.out.println("Sua senha e: " + passageiro.getSenha());
+                                    }
+                                }
                                 break;
                             case 3:
-                                System.out.println("3 - Excluir um passageiro.");
+                                System.out.println("3 - Excluir um passageiro."); //Excluir
                                 break;
                             case 4:
-                                System.out.println("4 - Cancelar voo do passageiro.");
+                                System.out.println("4 - Cancelar voo do passageiro."); //Excluir
                                 break;
                             case 9:
                                 System.out.println("Saindo do tratamento de passageiros.");
@@ -448,7 +611,7 @@ public class Teste {
                                 System.out.println("4 - Cancelar voo.");
                                 break;
                             case 5:
-                                System.out.println("5 - Alterar voo do passageiro.");
+                                System.out.println("5 - Alterar voo do passageiro."); //Excluir
                                 break;
                             case 9:
                                 System.out.println("Saindo do tratamento de voos.");
@@ -462,7 +625,7 @@ public class Teste {
                     break;
 
                 case 3:
-                    System.out.println("3 - Tratamento de companhias aereas");
+                    System.out.println("3 - Tratamento de companhias aereas"); //Excluir
                     int opcaoTratarCompanias = menuTratarCompAereas();
                     while (opcaoTratarCompanias != 9) {
                         switch (opcaoTratarCompanias) {
@@ -531,6 +694,30 @@ public class Teste {
             }
 
         }
+    }
+    
+    private void programaFuncionario(){
+        int opcaoUsuario = 10;
+        
+        while(opcaoUsuario != 9){
+            opcaoUsuario = this.menuFuncionario();
+            switch(opcaoUsuario){
+                case 1:
+                    System.out.println("Registrar entrada no aeroporto, insira documento: ");
+                    break;
+                case 2:
+                    System.out.println("Registrar entrada no aviao, insira documento: ");
+                    break;
+                case 9:
+                    System.out.println("Saindo do menu de funcionario.");
+                    break;
+                default:
+                    System.out.println("Escolha uma opcao valida.");
+                    break;
+            }
+        
+        }
+        
     }
 
     private int menuTratarPassageiro() {

@@ -5,8 +5,6 @@
 package teste;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 
 public class Administrador {
@@ -16,7 +14,7 @@ public class Administrador {
     private LocalDate nascimento;
     private String documento;
     private String login;
-    private String Senha;
+    private String senha;
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
     
@@ -24,6 +22,7 @@ public class Administrador {
     public Administrador(){
         this.id = ++Administrador.serial;
         this.dataCriacao = LocalDate.now();
+        this.dataModificacao = LocalDate.now();
     }
 
     public int getId() {
@@ -36,6 +35,7 @@ public class Administrador {
 
     public void setNome(String nome) {
         this.nome = nome;
+        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getNascimento() {
@@ -44,6 +44,7 @@ public class Administrador {
 
     public void setNascimento(LocalDate nascimento) {
         this.nascimento = nascimento;
+        this.dataModificacao = LocalDate.now();
     }
 
     public String getDocumento() {
@@ -52,6 +53,7 @@ public class Administrador {
 
     public void setDocumento(String documento) {
         this.documento = documento;
+        this.dataModificacao = LocalDate.now();
     }
 
     public String getLogin() {
@@ -60,14 +62,16 @@ public class Administrador {
 
     public void setLogin(String login) {
         this.login = login;
+        this.dataModificacao = LocalDate.now();
     }
 
     public String getSenha() {
-        return Senha;
+        return senha;
     }
 
     public void setSenha(String Senha) {
-        this.Senha = Senha;
+        this.senha = Senha;
+        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getDataCriacao() {
@@ -76,10 +80,6 @@ public class Administrador {
 
     public LocalDate getDataModificacao() {
         return dataModificacao;
-    }
-    
-    public void setDataModificacao(LocalDate dataModificacao) {
-        this.dataModificacao = dataModificacao;
     }
 
     @Override
@@ -140,7 +140,7 @@ public class Administrador {
         admin += "\nID = " + this.id;
         admin += "\nNome = " + this.nome;
         admin += "\nLogin = " + this.login;
-        admin += "\nSenha = " + this.Senha;
+        admin += "\nSenha = " + this.senha;
         admin += "\n";
         return admin;
     }

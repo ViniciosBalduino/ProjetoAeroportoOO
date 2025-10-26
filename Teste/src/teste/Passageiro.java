@@ -24,6 +24,7 @@ public class Passageiro {
     public Passageiro(){
         this.id = ++Passageiro.serial;
         this.dataCriacao = LocalDate.now();
+        this.dataModificacao = LocalDate.now();
     }
 
     public int getId() {
@@ -36,6 +37,7 @@ public class Passageiro {
 
     public void setNome(String nome) {
         this.nome = nome;
+        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getNascimento() {
@@ -44,6 +46,7 @@ public class Passageiro {
 
     public void setNascimento(LocalDate nascimento) {
         this.nascimento = nascimento;
+        this.dataModificacao = LocalDate.now();
     }
 
     public String getDocumento() {
@@ -52,6 +55,7 @@ public class Passageiro {
 
     public void setDocumento(String documento) {
         this.documento = documento;
+        this.dataModificacao = LocalDate.now();
     }
 
     public String getLogin() {
@@ -60,6 +64,7 @@ public class Passageiro {
 
     public void setLogin(String login) {
         this.login = login;
+        this.dataModificacao = LocalDate.now();
     }
 
     public String getSenha() {
@@ -68,6 +73,7 @@ public class Passageiro {
 
     public void setSenha(String Senha) {
         this.Senha = Senha;
+        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getDataCriacao() {
@@ -78,8 +84,23 @@ public class Passageiro {
         return dataModificacao;
     }
     
-    public void setDataModificacao(LocalDate dataModificacao) {
-        this.dataModificacao = dataModificacao;
+    public String recuperarLogin(){
+        String passageiro = "";
+        passageiro += "\nID = " + this.id;
+        passageiro += "\nNome = " + this.nome;
+        passageiro += "\nLogin = " + this.login;
+        passageiro += "\n";
+        return passageiro;
+    }
+    
+    public String recuperarSenha(){
+        String passageiro = "";
+        passageiro += "\nID = " + this.id;
+        passageiro += "\nNome = " + this.nome;
+        passageiro += "\nLogin = " + this.login;
+        passageiro += "\nSenha = " + this.Senha;
+        passageiro += "\n";
+        return passageiro;
     }
 
     @Override
@@ -104,7 +125,6 @@ public class Passageiro {
         return this.id == other.id;
     }
     
-    
     @Override
     public String toString() {
         String passageiro = "";
@@ -115,35 +135,5 @@ public class Passageiro {
         passageiro += "\n";
         return passageiro;
     }
-    
-    public String recuperarDocumento(){
-        String passageiro = "";
-        passageiro += "\nID = " + this.id;
-        passageiro += "\nNome = " + this.nome;
-        passageiro += "\nDocumento = " + this.documento;
-        passageiro += "\n";
-        return passageiro;
-    }
-
-    public String recuperarLogin(){
-        String passageiro = "";
-        passageiro += "\nID = " + this.id;
-        passageiro += "\nNome = " + this.nome;
-        passageiro += "\nLogin = " + this.login;
-        passageiro += "\n";
-        return passageiro;
-    }
-    
-    public String recuperarSenha(){
-        String passageiro = "";
-        passageiro += "\nID = " + this.id;
-        passageiro += "\nNome = " + this.nome;
-        passageiro += "\nLogin = " + this.login;
-        passageiro += "\nSenha = " + this.Senha;
-        passageiro += "\n";
-        return passageiro;
-    }
-    
-    
 }
 

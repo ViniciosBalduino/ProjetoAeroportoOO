@@ -39,6 +39,7 @@ public class Voo {
             this.companhia = compGen;
         }
         this.dataCriacao = LocalDate.now();
+        this.dataModificacao = LocalDate.now();
     }
     
     public Voo(){};
@@ -53,6 +54,7 @@ public class Voo {
 
     public void setOrigem(String origem) {
         this.origem = origem;
+        this.dataModificacao = LocalDate.now();
     }
 
     public String getDestino() {
@@ -61,6 +63,7 @@ public class Voo {
 
     public void setDestino(String destino) {
         this.destino = destino;
+        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getData() {
@@ -69,6 +72,7 @@ public class Voo {
 
     public void setData(LocalDate data) {
         this.data = data;
+        this.dataModificacao = LocalDate.now();
     }
 
     public LocalTime getDuracao() {
@@ -77,6 +81,7 @@ public class Voo {
 
     public void setDuracao(LocalTime duracao) {
         this.duracao = duracao;
+        this.dataModificacao = LocalDate.now();
     }
 
     public CompAerea getCompanhia() {
@@ -85,6 +90,7 @@ public class Voo {
 
     public void setCompanhia(CompAerea companhia) {
         this.companhia = companhia;
+        this.dataModificacao = LocalDate.now();
     }
 
     public int getCapacidade() {
@@ -93,6 +99,7 @@ public class Voo {
 
     public void setCapacidade(int capacidade) {
         this.capacidade = capacidade;
+        this.dataModificacao = LocalDate.now();
     }
 
     public String getEstado() {
@@ -101,6 +108,7 @@ public class Voo {
 
     public void setEstado(String estado) {
         this.estado = estado;
+        this.dataModificacao = LocalDate.now();
     }
 
     @Override
