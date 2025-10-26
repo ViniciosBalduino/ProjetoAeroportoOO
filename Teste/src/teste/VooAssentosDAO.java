@@ -28,7 +28,16 @@ public class VooAssentosDAO {
         VooAssentos v3 = new VooAssentos(voos.buscarRetornarVooPorID("Gal 2-V2"), passageiros.buscarRetornarPassageiroPorID(3));
         v1.setIdPassageiro(passageiros.buscarRetornarPassageiroPorID(3).getId());
         this.adicionaVooAssentos(v3);
-    }    
+    }
+
+    public int contarAssentosPorVoo(String idVoo){
+        int assentosDisponiveis = 0;
+        for(int i=0; i < vooAssentos.length; i++){
+            if(vooAssentos[i].getIdVoo() == idVoo)
+                assentosDisponiveis++;
+        }
+        return assentosDisponiveis;
+    }
     
     public String buscarvooAssentosPorID(String idAssento){
         boolean vazio = true;

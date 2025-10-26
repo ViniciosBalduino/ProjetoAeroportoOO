@@ -22,7 +22,7 @@ public class VooDAO {
         v1.setDestino("Uberlandia");
         v1.setData(LocalDate.of(2025, 10, 30));
         v1.setDuracao(LocalTime.of(1, 0));
-        v1.setCapacidade(60);
+        v1.setCapacidade(5);
         this.adicionaVoo(v1);
                
         Voo v2 = new Voo(companhias.buscarRetornarCompSigla(("Gal 2").toUpperCase()));
@@ -30,7 +30,7 @@ public class VooDAO {
         v2.setDestino("Araguari");
         v2.setData(LocalDate.of(2025, 10, 30));
         v2.setDuracao(LocalTime.of(0, 10));
-        v2.setCapacidade(30);
+        v2.setCapacidade(3);
         this.adicionaVoo(v2);
         
         Voo v3 = new Voo(companhias.buscarRetornarCompSigla(("Gal 3").toUpperCase()));
@@ -75,6 +75,14 @@ public class VooDAO {
         }
         return null;
     }
+        
+    public Voo buscarVooPorData(String data){
+        for(int i=0; i<voos.length; i++){
+            if(voos[i]!=null && voos[i].getData().toString().equals(data))
+                return voos[i];
+        }
+        return null;
+    }
     
     public Voo buscarRetornarVooPorID(String IDVoo){
         for(int i=0; i<voos.length; i++){
@@ -90,7 +98,7 @@ public class VooDAO {
         String todosVoos = "";
         for(int i=0; i<voos.length; i++){
             if(voos[i] != null){
-                todosVoos += voos[i].toString();
+                todosVoos += voos[i].toString() + "--------------------------";
                 vazio = false;
             }
         }

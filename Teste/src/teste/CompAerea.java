@@ -23,6 +23,7 @@ public class CompAerea {
     public CompAerea(){
         this.id = ++CompAerea.serial;
         this.dataCriacao = LocalDate.now();
+        this.dataModificacao = LocalDate.now();
     }
 
     public int getId() {
@@ -35,6 +36,7 @@ public class CompAerea {
 
     public void setNome(String nome) {
         this.nome = nome;
+        this.dataModificacao = LocalDate.now();
     }
 
     public String getAbreviacao() {
@@ -43,6 +45,7 @@ public class CompAerea {
 
     public void setAbreviacao(String abreviacao) {
         this.abreviacao = abreviacao;
+        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getDataCriacao() {
@@ -51,10 +54,6 @@ public class CompAerea {
 
     public LocalDate getDataModificacao() {
         return dataModificacao;
-    }
-
-    public void setDataModificacao(LocalDate dataModificacao) {
-        this.dataModificacao = dataModificacao;
     }
 
     @Override

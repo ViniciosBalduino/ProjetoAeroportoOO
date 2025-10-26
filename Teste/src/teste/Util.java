@@ -5,14 +5,13 @@
 package teste;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 
 public class Util {
     private static Passageiro passageiroLogado = null;
     private static Administrador administradorLogado = null;
+    private static Funcionario funcionarioLogado = null;
     
-    private static LocalDateTime diaAtual = LocalDateTime.of(2023, Month.MARCH, 01, 22, 05);
+    private static LocalDate diaAtual = LocalDate.now();
 
     public static Passageiro getPassageiroLogado() {
         return passageiroLogado;
@@ -29,20 +28,20 @@ public class Util {
     public static void setAdministradorLogado(Administrador administradorLogado) {
         Util.administradorLogado = administradorLogado;
     }
+    
+    public static Funcionario getFuncionarioLogado(){
+        return funcionarioLogado;
+    }
+    
+    public static void setFuncionarioLogado(Funcionario funcionarioLogado){
+        Util.funcionarioLogado = funcionarioLogado;
+    }
 
-    public static LocalDateTime getDiaAtual() {
+    public static LocalDate getDiaAtual() {
         return diaAtual;
     }
     
     public static int getDiaDoMes() {
         return diaAtual.getDayOfMonth();
-    }
-
-    public static void incrementaDias(int dias) {
-        diaAtual.plusDays(dias);
-    }
-    
-    public static void incrementaMes(int numeroMeses) {
-        diaAtual.plusMonths(numeroMeses);
     }
 }

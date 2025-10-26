@@ -4,10 +4,58 @@
  */
 package teste;
 
+import java.time.LocalDate;
+
 /**
  *
  * @author vinic
  */
 public class Checkin {
+    private static int serial;
+    private int id;
+    private Ticket ticket;
+    private String documento;
+    private LocalDate dataCriacao;
+    private LocalDate dataModificacao;
     
+    public Checkin(String documento){
+        this.id = Checkin.serial++;
+        this.dataCriacao = LocalDate.now();
+        this.dataModificacao = LocalDate.now();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+        this.dataModificacao = LocalDate.now();
+
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public LocalDate getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public LocalDate getDataModificacao() {
+        return dataModificacao;
+    }
+    
+    @Override
+    public String toString(){
+        String checkin = "";
+        checkin += "\nID = " + this.id;
+        checkin += "\nDocumento = " + this.documento;
+        checkin += "\nTicket: " + this.ticket;
+        return checkin;
+    }
 }

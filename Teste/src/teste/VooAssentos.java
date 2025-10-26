@@ -5,7 +5,6 @@
 package teste;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Objects;
 
 /**
@@ -16,6 +15,7 @@ public class VooAssentos {
     private static int serial;
     private String idAssento;
     private String idVoo;
+    private int valor;
     private int idPassageiro;
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
@@ -27,12 +27,18 @@ public class VooAssentos {
         }
         this.idAssento = voo.getId() + "F" + i + "A" +(((serial++)%6)+1);
         this.idVoo = voo.getId();
+        this.valor = serial%2 == 0 ? 100 : 50;
         this.dataCriacao = LocalDate.now();
+        this.dataModificacao = LocalDate.now();
     }
     
     
     public String getIdVoo() {
         return idVoo;
+    }
+    
+    public int getValor() {
+        return valor;
     }
 
     public String getIdAssento() {
@@ -45,6 +51,7 @@ public class VooAssentos {
 
     public void setIdPassageiro(int idPassageiro) {
         this.idPassageiro = idPassageiro;
+        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getDataCriacao() {
@@ -53,10 +60,6 @@ public class VooAssentos {
 
     public LocalDate getDataModificacao() {
         return dataModificacao;
-    }
-
-    public void setDataModificacao(LocalDate dataModificacao) {
-        this.dataModificacao = dataModificacao;
     }
 
     @Override

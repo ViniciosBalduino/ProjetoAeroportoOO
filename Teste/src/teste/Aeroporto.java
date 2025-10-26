@@ -24,6 +24,7 @@ public class Aeroporto {
     public Aeroporto(){
         this.id = ++Aeroporto.serial;
         this.dataCriacao = LocalDate.now();
+        this.dataModificacao = LocalDate.now();
     }
 
     public int getId() {
@@ -36,6 +37,7 @@ public class Aeroporto {
 
     public void setNome(String nome) {
         this.nome = nome;
+        this.dataModificacao = LocalDate.now();
     }
 
     public String getAbreviacao() {
@@ -44,6 +46,7 @@ public class Aeroporto {
 
     public void setAbreviacao(String abreviacao) {
         this.abreviacao = abreviacao;
+        this.dataModificacao = LocalDate.now();
     }
 
     public String getCidade() {
@@ -52,6 +55,7 @@ public class Aeroporto {
 
     public void setCidade(String cidade) {
         this.cidade = cidade;
+        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getDataCriacao() {
@@ -60,10 +64,6 @@ public class Aeroporto {
 
     public LocalDate getDataModificacao() {
         return dataModificacao;
-    }
-
-    public void setDataModificacao(LocalDate dataModificacao) {
-        this.dataModificacao = dataModificacao;
     }
 
     @Override
