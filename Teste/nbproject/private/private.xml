@@ -5,12 +5,10 @@
         <group>
             <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/Teste.java</file>
             <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/TicketDAO.java</file>
-            <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/Ticket.java</file>
-            <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/VooAssentosDAO.java</file>
-            <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/VooAssentos.java</file>
-            <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/VooDAO.java</file>
-            <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/Voo.java</file>
-            <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/PassageiroDAO.java</file>
+            <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/Checkin.java</file>
+            <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/CheckinDAO.java</file>
+            <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/BoardingPassDAO.java</file>
+            <file>file:/D:/faculdade/analise%20e%20desenvolvimento%20de%20sistemas/3%20semestre/POO/projeto24-10/ProjetoAeroportoOO-main/ProjetoAeroportoOO-main/Teste/src/teste/BoardingPass.java</file>
         </group>
     </open-files>
 </project-private>

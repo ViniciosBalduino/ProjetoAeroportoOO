@@ -21,12 +21,21 @@ public class CheckinDAO {
         }
     }
     
+    public Checkin retornaCheckInIDTicket(String IDTicket){
+        for(Checkin checkin : check_ins){
+            if(checkin != null && checkin.getTicket().getCodigoTicket().toLowerCase().equals(IDTicket.toLowerCase())){
+                return checkin;
+            }
+        }
+        return null;
+    }
+    
     public String mostrarTodos(){
         boolean vazio = true;
         String todosCheckin = "";
         for(int i=0; i<check_ins.length; i++){
             if(check_ins[i] != null){
-                todosCheckin += check_ins[i].toString() + "---x----x---x---x---x---x---";
+                todosCheckin += check_ins[i].toString() + "\n---x----x---x---x---x---x---\n";
                 vazio = false;
             }
         }

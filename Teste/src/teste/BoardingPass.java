@@ -23,6 +23,10 @@ public class BoardingPass {
         this.idAssento = assento.getIdAssento();
         this.codigoTicket = ticket.getCodigoTicket();
     }
+
+    public String getCodigoTicket() {
+        return codigoTicket;
+    }
     
     public Passageiro getPassageiro(){
         return passageiro;

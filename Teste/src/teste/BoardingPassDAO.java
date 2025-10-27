@@ -21,6 +21,16 @@ public class BoardingPassDAO {
         }
     }
     
+    public BoardingPass buscarPorIDTicket(String isTicket) {
+        for (int i = 0; i < boardingPasses.length; i++) {
+            if (boardingPasses[i] != null &&
+                boardingPasses[i].getCodigoTicket().toLowerCase().equals(isTicket.toLowerCase())){
+                return boardingPasses[i];
+            }
+        }
+        return null;
+    }
+    
     public BoardingPass buscarPorPassageiroEVoo(int idPassageiro, String idVoo) {
         
         for (int i = 0; i < boardingPasses.length; i++) {

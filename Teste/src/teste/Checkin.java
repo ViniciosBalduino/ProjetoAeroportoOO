@@ -17,17 +17,28 @@ public class Checkin {
     private String documento;
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
+    private String estado;
     
     public Checkin(Ticket ticket, String documento){
         this.id = ++Checkin.serial;
         this.dataCriacao = LocalDate.now();
         this.dataModificacao = LocalDate.now();
+        this.ticket = ticket;
+        this.estado = "Check in concluido";
     }
 
     public int getId() {
         return id;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+    
     public Ticket getTicket() {
         return ticket;
     }

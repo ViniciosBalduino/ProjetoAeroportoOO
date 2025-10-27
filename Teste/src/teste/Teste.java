@@ -5,6 +5,7 @@
 package teste;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Scanner;
 
 public class Teste {
@@ -141,7 +142,7 @@ public class Teste {
                                 Voo vooPretendido = voos.buscarVooPorDestinoString(scanner.nextLine());
                                 if (vooPretendido != null) {
                                     System.out.println(vooPretendido.toString());
-                                    if (!(vooAssentos.contarAssentosPorVoo(vooPretendido.getId()) > vooPretendido.getCapacidade())) {
+                                    if (vooAssentos.contarAssentosPorVoo(vooPretendido.getId()) > vooPretendido.getCapacidade()) {
                                         System.out.println("\nVoo sem assentos disponiveis, por favor busque outro.");
                                         break;
                                     }
@@ -394,7 +395,19 @@ public class Teste {
                 case 8:
                     System.out.println("Insira o codigo do ticket: ");
                     String codigoTicket = scanner.nextLine();
-                    tickets.buscaTicket(codigoTicket);
+                    Ticket buscaTicket = tickets.buscaTicket(codigoTicket);
+                    if(buscaTicket == null){
+                        System.out.println("Buscando cartoes de embarque");{
+                        Checkin buscaCheckin = checkins.retornaCheckInIDTicket(codigoTicket);
+                        if(buscaCheckin != null){
+                            System.out.println(buscaCheckin.toString());
+                            System.out.println(buscaCheckin.getEstado());
+                        } else{
+                            System.out.println("Nenhum ticket encontrado");
+                        }
+                        
+                    }
+                    }
                 case 9:
                     System.out.println("Cancelando a interacao");
                     break;
@@ -420,7 +433,7 @@ public class Teste {
         menu += "\n1 - Entrar como passageiro.";
         menu += "\n2 - Entrar como funcionario.";
         menu += "\n3 - Entrar como administrador.";
-        menu += "\n4 - Fazer seu cadastro.";
+        menu += "\n4 - Fazer seu cadastro como passageiro.";
         menu += "\n6 - Procurar voos.";
         menu += "\n7 - Ver todos os voos.";
         menu += "\n8 - Conferir reserva.";
@@ -516,8 +529,8 @@ public class Teste {
                     System.out.println("Digite a id do voo dsejado");
                     String idVoo = scanner.nextLine();
                     Voo vooEscolhido = voos.buscarRetornarVooPorID(idVoo);
-                    System.out.println(vooEscolhido);
-                    System.out.println(vooAssentos.mostrarTodosAssentosPorVoo(vooEscolhido));
+                    //System.out.println(vooEscolhido);
+                    //System.out.println(vooAssentos.mostrarTodosAssentosPorVoo(vooEscolhido));
                     if (vooAssentos.contarAssentosPorVoo(idVoo) >= vooEscolhido.getCapacidade()) {
                         System.out.println("\nVoo sem assentos disponiveis, por favor busque outro.");
                     } else {
@@ -541,7 +554,7 @@ public class Teste {
                     //Faz Check-In
                     System.out.println("Esses sao seus tickets disponiveis para check-in: ");
                     System.out.println(tickets.mostrarTicketsPorPassageiro(pLogado.getId()));
-                    if(tickets.mostrarTicketsPorPassageiro(pLogado.getId()).equals("")){
+                    if (tickets.mostrarTicketsPorPassageiro(pLogado.getId()).equals("")) {
                         System.out.println("\nNao ha tickets disponiveis para fazer check-in.");
                         break;
                     }
@@ -560,6 +573,8 @@ public class Teste {
                             System.out.println("Check-in realizado! Seu cartao de embarque:\n" + novoBoardingPass.toString());
                             tickets.removeTicketPosCheckIn(ticketEscolhido.getCodigoTicket());
                             ticketEscolhido = null;
+                            //System.out.println("mostrando chckins");
+                            //System.out.println(checkins.mostrarTodos());
                         } else {
                             System.out.println("Nao e possivel fazer check-in para este voo mais. Desculpe.");
                         }
@@ -570,13 +585,14 @@ public class Teste {
                     break;
                 }
 
-                case 4:{
+                case 4: {
                     System.out.println("5 - Alterar nome.");
                     System.out.println("Digite o novo nome: ");
                     pLogado.setNome(scanner.nextLine());
                     System.out.println("Nome alterado com sucesso.");
                     System.out.println(pLogado);
-                    break;}
+                    break;
+                }
 
                 case 9:
                     Util.setPassageiroLogado(null);
@@ -596,22 +612,27 @@ public class Teste {
         while (opcaoUsuario != 9) {
             opcaoUsuario = this.menuAdministrador();
             switch (opcaoUsuario) {
-                
+
                 case 1:
                     int opcaoTratarPassageiro = menuTratarPassageiro();
                     while (opcaoTratarPassageiro != 9) {
                         switch (opcaoTratarPassageiro) {
                             case 1:
                                 System.out.println("Todos os passageiros:");
-                                passageiros.mostrarTodos();
+                                System.out.println(passageiros.mostrarTodos());
                                 break;
                             case 2:
                                 System.out.println("Recuperar senha de passageiro. Insira o documento");
+                                boolean existePassagiro = false;
                                 String documentoPassageiro = scanner.nextLine();
                                 for (Passageiro passageiro : passageiros.passageiros) {
-                                    if (passageiro.getDocumento().equals(documentoPassageiro)) {
+                                    if (passageiro != null && passageiro.getDocumento().equals(documentoPassageiro)) {
                                         System.out.println("Sua senha e: " + passageiro.getSenha());
+                                        existePassagiro = true;
                                     }
+                                }
+                                if (!existePassagiro) {
+                                    System.out.println("Documnto inserido nao corresponde a nenhum passageiro.");
                                 }
                                 break;
                             case 9:
@@ -631,10 +652,72 @@ public class Teste {
                         switch (opcaoTratarVoo) {
                             case 1:
                                 System.out.println("1 - Mostrar todos os voos.");
+                                System.out.println(voos.mostrarTodos());
                                 break;
-                            case 2:
+                            case 2: {
                                 System.out.println("2 - Cadastrar voo.");
+                                System.out.println(companhias.mostrarTodos());
+                                System.out.println("Digite a sigla da companhia aerea responsavel pelo voo: ");
+                                CompAerea compAereaSelecionada = companhias.buscarRetornarCompSigla(scanner.nextLine().toUpperCase());
+                                if (compAereaSelecionada != null) {
+                                    Voo novoVoo = new Voo(compAereaSelecionada);
+                                    System.out.println("Digite a origem do voo: ");
+                                    novoVoo.setOrigem(scanner.nextLine());
+                                    System.out.println("Digite o destino do voo: ");
+                                    novoVoo.setDestino(scanner.nextLine());
+                                    System.out.println("Digite a data do voo no seguinte formato YYYY-MM-DD: ");
+                                    novoVoo.setData(LocalDate.parse(scanner.nextLine()));
+                                    System.out.println("Digite a duracao do voo no seguinte formato HH:MM:SS: ");
+                                    novoVoo.setDuracao(LocalTime.parse(scanner.nextLine()));
+                                    System.out.println("Digite a capacidade do voo: ");
+                                    novoVoo.setCapacidade(Integer.parseInt(scanner.nextLine()));
+                                    novoVoo.setEstado("programado");
+                                    voos.adicionaVoo(novoVoo);
+                                } else{
+                                    System.out.println("Companhia aerea nao encontrada");
+                                }
+
                                 break;
+                            }
+                            case 3: {
+                                System.out.println("3 - Alterar estado do voo");
+                                System.out.println(voos.mostrarTodos());
+                                System.out.println("\nDigite o id do voo que deseja alterar o estado: ");
+                                Voo vooSelecionado = voos.buscarRetornarVooPorID(scanner.nextLine());
+                                if (vooSelecionado != null) {
+                                    System.out.println("Digite 1 para inserir o estado \"Programado\"");
+                                    System.out.println("Digite 2 para inserir o estado \"Embarque\"");
+                                    System.out.println("Digite 3 para inserir o estado \"Decolado\"");
+                                    System.out.println("Digite 4 para inserir o estado \"Atrasado\"");
+                                    System.out.println("Digite 5 para inserir o estado \"Cancelado\"");
+                                    int opcaoEstado = 0;
+                                    while (opcaoEstado != 1 && opcaoEstado != 2 && opcaoEstado != 3 && opcaoEstado != 4 && opcaoEstado != 5) {
+                                        opcaoEstado = Integer.parseInt(scanner.nextLine());
+                                        switch (opcaoEstado) {
+                                            case 1:
+                                                vooSelecionado.setEstado("programado");
+                                                break;
+                                            case 2:
+                                                vooSelecionado.setEstado("embarque");
+                                                break;
+                                            case 3:
+                                                vooSelecionado.setEstado("decolado");
+                                                break;
+                                            case 4:
+                                                vooSelecionado.setEstado("atrasado");
+                                                break;
+                                            case 5:
+                                                vooSelecionado.setEstado("cancelado");
+                                                break;
+                                            default:
+                                                System.out.println("Opcao invalida");
+                                                System.out.println("Digite novamente");
+                                                opcaoEstado = Integer.parseInt(scanner.nextLine());
+                                        }
+                                    }
+                                }
+                                break;
+                            }
                             case 9:
                                 System.out.println("Saindo do tratamento de voos.");
                                 break;
@@ -763,7 +846,7 @@ public class Teste {
                     System.out.println("escolha uma opcao valida");
                     break;
             }
-            
+
         }
     }
 
@@ -773,71 +856,84 @@ public class Teste {
         while (opcaoUsuario != 9) {
             opcaoUsuario = this.menuFuncionario();
             switch (opcaoUsuario) {
-                case 1:
+                case 1:{
                     System.out.println("\n--- Registrar Entrada no Aeroporto ---");
                     System.out.println("Digite o codigo do Ticket do passageiro:");
                     String codTicketPortao = scanner.nextLine();
 
-                    Ticket ticketPortao = tickets.buscaTicket(codTicketPortao);
-
+                    //System.out.println(boardingPasses.mostrarTodos());
+                    //BoardingPass ticketPortao = boardingPasses.buscarPorIDTicket(codTicketPortao);
+                    //Ticket ticketPortao = tickets.buscaTicket(codTicketPortao);
+                    Checkin ticketPortao = checkins.retornaCheckInIDTicket(codTicketPortao);
+                    
                     if (ticketPortao != null) {
                         BoardingPass boardingPass = boardingPasses.buscarPorPassageiroEVoo(
-                                ticketPortao.getPassageiro().getId(),
-                                ticketPortao.getVoo().getId()
+                                ticketPortao.getTicket().getPassageiro().getId(),
+                                ticketPortao.getTicket().getVoo().getId()
                         );
 
                         if (boardingPass != null) {
                             System.out.println("ENTRADA AUTORIZADA.");
                             System.out.println(boardingPass.toString());
+                            ticketPortao.setEstado("No aeroporto");
                         } else {
                             System.out.println("ENTRADA NEGADA. Passageiro nao fez check-in.");
                         }
                     } else {
                         System.out.println("Ticket nao encontrado.");
                     }
-                    break;
-                case 2:
+                    break;}
+                case 2:{
                     System.out.println("\n--- Registrar Embarque (Entrada no Aviao) ---");
                     System.out.println("Digite o codigo do Ticket do passageiro:");
                     String codTicketAviao = scanner.nextLine();
 
-                    Ticket ticketAviao = tickets.buscaTicket(codTicketAviao);
+                    //Ticket ticketAviao = tickets.buscaTicket(codTicketAviao);
+                    //System.out.println(boardingPasses.mostrarTodos());
+                    //BoardingPass ticketAviao = boardingPasses.buscarPorIDTicket(codTicketAviao);
+                    Checkin ticketAviao = checkins.retornaCheckInIDTicket(codTicketAviao);
 
                     if (ticketAviao != null) {
                         BoardingPass boardingPass = boardingPasses.buscarPorPassageiroEVoo(
-                                ticketAviao.getPassageiro().getId(),
-                                ticketAviao.getVoo().getId()
+                                ticketAviao.getTicket().getPassageiro().getId(),
+                                ticketAviao.getTicket().getVoo().getId()
                         );
 
-                        if (boardingPass != null) {
+                        if (boardingPass != null && ticketAviao.getEstado() == "No aeroporto") {
                             System.out.println("EMBARQUE AUTORIZADO. Bom voo!");
                             System.out.println("Passageiro: " + boardingPass.getPassageiro().getNome());
                             vooAssentos.buscarvooAssentosPorID(boardingPass.getIdAssento());
                             System.out.println("Assento: " + vooAssentos.buscarvooAssentosPorID(boardingPass.getIdAssento()));
+                            ticketAviao.setEstado("No embarque");
                         } else {
-                            System.out.println("EMBARQUE NEGADO. Passageiro nao fez check-in ou nao passou pelo portao.");
+                            if(ticketAviao.getEstado() != "No aeroporto"){
+                                System.out.println("EMBARQUE NEGADO. Passageiro nao passou pelo portao.");
+                            } else{
+                                System.out.println("EMBARQUE NEGADO. Passageiro nao fez check-in ou nao passou pelo portao.");
+                            }
                         }
                     } else {
                         System.out.println("Ticket nao encontrado.");
                     }
-                    break;
+                    break;}
                 case 3:
                     System.out.println("\n--- Despachar Bagagem ---");
                     System.out.println("Digite o codigo do Ticket do passageiro:");
                     String codigoTicket = scanner.nextLine();
 
-                    Ticket ticketEscolhido = tickets.buscaTicket(codigoTicket);
+                    //Ticket ticketEscolhido = tickets.buscaTicket(codigoTicket);
+                    Checkin ticketEscolhido = checkins.retornaCheckInIDTicket(codigoTicket);
 
                     if (ticketEscolhido != null) {
-                        Passageiro p = ticketEscolhido.getPassageiro();
+                        Passageiro p = ticketEscolhido.getTicket().getPassageiro();
                         System.out.println("Ticket encontrado:");
                         System.out.println("Passageiro: " + p.getNome());
-                        System.out.println("Voo: " + ticketEscolhido.getVoo().getId());
+                        System.out.println("Voo: " + ticketEscolhido.getTicket().getVoo().getId());
                         System.out.println("Confirmar despacho? (1-Sim / 2-Nao)");
 
                         int conf = Integer.parseInt(scanner.nextLine());
                         if (conf == 1) {
-                            DespachoBagagem novoDespacho = new DespachoBagagem(ticketEscolhido, p.getDocumento());
+                            DespachoBagagem novoDespacho = new DespachoBagagem(ticketEscolhido.getTicket(), p.getDocumento());
                             if (despachos.adicionaDespachoBagagem(novoDespacho)) {
                                 System.out.println("Bagagem despachada com sucesso. ID do Despacho: " + novoDespacho.getId());
                             } else {
@@ -884,7 +980,7 @@ public class Teste {
         menu += "\n=========================================\n";
         menu += "\n1 - Mostrar todos os voos.";
         menu += "\n2 - Cadastrar voo.";
-        menu += "\n5 - Alterar voo do passageiro.";
+        menu += "\n3 - Alterar estado do voo.";
         menu += "\n9 - Para sair do menu\n";
         menu += "\nQual sua opcao ? R: ";
 
@@ -907,7 +1003,7 @@ public class Teste {
 
         return Integer.parseInt(scanner.nextLine());
     }
-    
+
     private int menuRelatorios() {
         String menu = "";
         menu += "\n=========================================\n";
