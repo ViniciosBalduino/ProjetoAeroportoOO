@@ -4,6 +4,9 @@
  */
 package teste;
 
+import model.Passageiro;
+import model.Funcionario;
+import model.Administrador;
 import java.time.LocalDate;
 
 public class Util {

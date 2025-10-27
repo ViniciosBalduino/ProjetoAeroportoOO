@@ -4,6 +4,8 @@
  */
 package teste;
 
+import DAOS.*;
+import model.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
@@ -904,7 +906,7 @@ public class Teste {
                             System.out.println("Passageiro: " + boardingPass.getPassageiro().getNome());
                             vooAssentos.buscarvooAssentosPorID(boardingPass.getIdAssento());
                             System.out.println("Assento: " + vooAssentos.buscarvooAssentosPorID(boardingPass.getIdAssento()));
-                            ticketAviao.setEstado("No embarque");
+                            ticketAviao.setEstado("Embarcado");
                         } else {
                             if(ticketAviao.getEstado() != "No aeroporto"){
                                 System.out.println("EMBARQUE NEGADO. Passageiro nao passou pelo portao.");
