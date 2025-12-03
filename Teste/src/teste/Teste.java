@@ -38,6 +38,7 @@ public class Teste {
     }
 
     public Teste() {
+            menuInicial.programaInicial();
         
     }
 

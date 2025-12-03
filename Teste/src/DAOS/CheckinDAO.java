@@ -21,7 +21,7 @@ public class CheckinDAO {
         String sql = "insert into checkin (idticket, documento, estado, datacriacao, datamodificacao) "
                 + "values (?, ?, ?, ?, ?)";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, checkin.getIdTicket());
             stmt.setString(2, checkin.getDocumento());
@@ -41,7 +41,7 @@ public class CheckinDAO {
     public Checkin retornaCheckInIDTicket(String idTicket) {
         String sql = "select * from checkin where idticket = ? limit 1";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, idTicket);
 
@@ -62,7 +62,7 @@ public class CheckinDAO {
     public Checkin buscarCheckinPorDocumento(String documento) {
         String sql = "select * from checkin where documento = ? limit 1";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, documento);
 
@@ -83,7 +83,7 @@ public class CheckinDAO {
         String sql = "update checkin set idticket = ?, documento = ?, estado = ?, "
                 + "datamodificacao = ? where id = ?";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, checkin.getIdTicket());
             stmt.setString(2, checkin.getDocumento());
@@ -105,7 +105,7 @@ public class CheckinDAO {
         boolean vazio = true;
         String todos = "";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Checkin c = construirCheckin(rs);

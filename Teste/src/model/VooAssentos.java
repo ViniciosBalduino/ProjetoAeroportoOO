@@ -13,7 +13,7 @@ import java.util.Objects;
  * @author vinic
  */
 public class VooAssentos {
-    //private static int serial;
+    private static int serial;
     private String idAssento;
     private String idVoo;
     private int valor;
@@ -30,7 +30,8 @@ public class VooAssentos {
     }
 
     public void setIdAssento(String idAssento) {
-        this.idAssento = idAssento;
+        
+        this.idAssento = this.serial++ + idAssento;
     }
 
     public String getIdVoo() {

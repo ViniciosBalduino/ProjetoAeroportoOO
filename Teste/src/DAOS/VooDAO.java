@@ -27,7 +27,7 @@ public class VooDAO {
         v.setData(rs.getDate("data").toLocalDate());
         v.setDuracao(rs.getTime("duracao").toLocalTime());
         v.setHorario(rs.getTime("horario").toLocalTime());
-        v.setSiglaCompanhia(rs.getString("siglacompanhia"));
+        v.setSiglaCompanhia(rs.getString("companhia"));
         v.setCapacidade(rs.getInt("capacidade"));
         v.setEstado(rs.getString("estado"));
         v.setDataCriacao(rs.getDate("datacriacao").toLocalDate());
@@ -36,10 +36,10 @@ public class VooDAO {
     }
 
     public String buscarVooPorIDString(String idVoo) {
-        String sql = "select * from voo where id = ?";
+        String sql = "select * from voos where id = ?";
         String resultado = "nao existe voo com este id cadastrado";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, idVoo);
 
@@ -58,9 +58,9 @@ public class VooDAO {
     }
 
     public Voo buscarVooPorDestinoString(String destinoVoo) {
-        String sql = "select * from voo where destino = ? limit 1";
+        String sql = "select * from voos where destino = ? limit 1";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, destinoVoo);
 
@@ -78,9 +78,9 @@ public class VooDAO {
     }
 
     public Voo buscarVooPorPartidaString(String partidaVoo) {
-        String sql = "select * from voo where origem = ? limit 1";
+        String sql = "select * from voos where origem = ? limit 1";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, partidaVoo);
 
@@ -98,9 +98,9 @@ public class VooDAO {
     }
 
     public Voo buscarVooPorData(String data) {
-        String sql = "select * from voo where data = ? limit 1";
+        String sql = "select * from voos where data = ? limit 1";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setDate(1, java.sql.Date.valueOf(data));
 
@@ -118,9 +118,9 @@ public class VooDAO {
     }
 
     public Voo buscarRetornarVooPorID(String idVoo) {
-        String sql = "select * from voo where id = ?";
+        String sql = "select * from voos where id = ?";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, idVoo);
 
@@ -138,11 +138,11 @@ public class VooDAO {
     }
 
     public String mostrarTodos() {
-        String sql = "select * from voo";
+        String sql = "select * from voos";
         String resultado = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Voo v = construirVoo(rs);
@@ -165,7 +165,7 @@ public class VooDAO {
         String sql = "insert into voo (id, origem, destino, data, duracao, horario, siglacompanhia, capacidade, estado) "
                 + "values (?,?,?,?,?,?,?,?)";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, voo.getId());
             stmt.setString(2, voo.getOrigem());

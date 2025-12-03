@@ -35,7 +35,7 @@ public class DespachoBagagemDAO {
      public boolean adicionaDespachoBagagem(DespachoBagagem despacho) {
         String sql = "insert into despachobagagem (id, idTicket) values (?,?)";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, despacho.getId());
             stmt.setString(2, despacho.getTicket());
@@ -72,7 +72,7 @@ public class DespachoBagagemDAO {
         String todasBagagens = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 todasBagagens += rs.getString("id")

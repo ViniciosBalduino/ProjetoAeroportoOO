@@ -24,7 +24,7 @@ public class FuncionarioDAO {
     public Funcionario buscarLoginFuncionario(String login, String senha) {
         String sql = "select * from funcionario where login = ? and senha = ? limit 1";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, login);
             stmt.setString(2, senha);
@@ -46,7 +46,7 @@ public class FuncionarioDAO {
         String sql = "insert into funcionario (nome, nascimento, documento, login, senha, datacriacao, datamodificacao) "
                 + "values (?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, func.getNome());
             stmt.setDate(2, java.sql.Date.valueOf(func.getNascimento()));
@@ -70,7 +70,7 @@ public class FuncionarioDAO {
         String todosFuncionarios = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Funcionario f = construirFuncionario(rs);

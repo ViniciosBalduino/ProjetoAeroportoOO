@@ -25,7 +25,7 @@ public class AeroportoDAO {
         String sql = "select nome from aeroporto where abreviacao = ?";
         String aeroportoComEssaSigla = "";
         
-        try(Connection con = new ConnectionFactory().getConnection();
+        try(Connection con = new Utils.ConnectionFactory().getConnection();
                 PreparedStatement stmt = con.prepareStatement(sql);){
             
             stmt.setString(1, sigla);
@@ -48,7 +48,7 @@ public class AeroportoDAO {
         String sql = "select * from aeroporto where abreviacao = ?";
         Aeroporto aeroportoComEssaSigla = new Aeroporto();
         
-        try(Connection con = new ConnectionFactory().getConnection();
+        try(Connection con = new Utils.ConnectionFactory().getConnection();
                 PreparedStatement stmt = con.prepareStatement(sql);){
             
             stmt.setString(1, sigla);
@@ -77,7 +77,7 @@ public class AeroportoDAO {
         String sql = "select nome, abreviacao from aeroporto";
         String todosAeroportos = "";
         
-        try(Connection con = new ConnectionFactory().getConnection();
+        try(Connection con = new Utils.ConnectionFactory().getConnection();
                 PreparedStatement stmt = con.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery();){
             
@@ -94,7 +94,7 @@ public class AeroportoDAO {
     public boolean adicionaAeroporto(Aeroporto aeroporto){
         String sql = "insert into aeroporto (nome, cidade, abreviacao) values (?,?,?)";
         
-        try(Connection con = new ConnectionFactory().getConnection();
+        try(Connection con = new Utils.ConnectionFactory().getConnection();
                 PreparedStatement stmt = con.prepareStatement(sql);){
             
             stmt.setString(1, aeroporto.getNome());

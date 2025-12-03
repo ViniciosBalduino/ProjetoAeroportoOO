@@ -19,17 +19,18 @@ public class TicketDAO {
 
 
     public boolean adicionaTicket(Ticket ticket) {
-        String sql = "insert into ticket (valor, idvoo, nomepassageiro, idvooassento, datacriacao, datamodificacao) "
-                + "values (?, ?, ?, ?, ?, ?)";
+        String sql = "insert into ticket (id, valor, idvoo, nomepassageiro, idvooassento, datacriacao, datamodificacao) "
+                + "values (?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
-            stmt.setInt(1, ticket.getValor());
-            stmt.setString(2, ticket.getIdVoo());
-            stmt.setString(3, ticket.getNomePassageiro());
-            stmt.setString(4, ticket.getIdVooAssento());
-            stmt.setDate(5, java.sql.Date.valueOf(ticket.getDataCriacao()));
-            stmt.setDate(6, java.sql.Date.valueOf(ticket.getDataModificacao()));
+            stmt.setString(1, ticket.getId());
+            stmt.setInt(2, ticket.getValor());
+            stmt.setString(3, ticket.getIdVoo());
+            stmt.setString(4, ticket.getNomePassageiro());
+            stmt.setString(5, ticket.getIdVooAssento());
+            stmt.setDate(6, java.sql.Date.valueOf(ticket.getDataCriacao()));
+            stmt.setDate(7, java.sql.Date.valueOf(ticket.getDataModificacao()));
 
             int linhas = stmt.executeUpdate();
             return linhas > 0;
@@ -39,12 +40,12 @@ public class TicketDAO {
         }
     }
     
-    public boolean removeTicketPosCheckIn(int idTicket) {
+    public boolean removeTicketPosCheckIn(String idTicket) {
         String sql = "delete from ticket where id = ?";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
-            stmt.setInt(1, idTicket);
+            stmt.setString(1, idTicket);
 
             int linhas = stmt.executeUpdate();
             return linhas > 0;
@@ -57,7 +58,7 @@ public class TicketDAO {
     public Ticket buscaTicket(String idTicket) {
         String sql = "select * from ticket where id = ? limit 1";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, idTicket);
 
@@ -76,7 +77,7 @@ public class TicketDAO {
     public Ticket buscaTicketPassageiroVoo(String nomePassageiro, String idVoo) {
         String sql = "select * from ticket where nomepassageiro = ? and idvoo = ? limit 1";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, nomePassageiro);
             stmt.setString(2, idVoo);
@@ -98,7 +99,7 @@ public class TicketDAO {
         String resultado = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, nomePassageiro);
 
@@ -125,7 +126,7 @@ public class TicketDAO {
         String todos = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 todos += construirTicket(rs).toString() + "\n---x----x---x---x---x---x---\n";
@@ -146,7 +147,7 @@ public class TicketDAO {
     private Ticket construirTicket(ResultSet rs) throws SQLException {
         Ticket t = new Ticket();
 
-        t.setId(rs.getInt("id"));
+        t.setId(rs.getString("id"));
         t.setValor(rs.getInt("valor"));
         t.setIdVoo(rs.getString("idvoo"));
         t.setNomePassageiro(rs.getString("nomepassageiro"));

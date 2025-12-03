@@ -11,7 +11,7 @@ import java.time.LocalDate;
  */
 public class Ticket {
     
-    private int id;
+    private String id;
     private int valor;
     private String idVoo;
     private String nomePassageiro;
@@ -19,11 +19,11 @@ public class Ticket {
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

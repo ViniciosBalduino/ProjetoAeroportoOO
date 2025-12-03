@@ -45,9 +45,9 @@ public class VooAssentosDAO {
     */
     
     public int contarAssentosPorVoo(String idVoo) {
-        String sql = "select count (*) from vooassentos where idVoo = ? ";
+        String sql = "select count(*) from vooassentos where idVoo = ? ";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, idVoo);
             //stmt.setString(2, idPassageiro);
@@ -83,7 +83,7 @@ public class VooAssentosDAO {
     public VooAssentos buscarAssentoPorVooEPassageiro(String idVoo, String idPassageiro) {
         String sql = "select * from vooassentos where idVoo = ? and idPassageiro = ?";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, idVoo);
             stmt.setString(2, idPassageiro);
@@ -131,7 +131,7 @@ public class VooAssentosDAO {
         String resultado = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, idAssento);
 
@@ -179,7 +179,7 @@ public class VooAssentosDAO {
         boolean vazio = true;
         //List<VooAssentos> listaAssentos = new ArrayList<>();
         
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
             
             stmt.setString(1, idVoo);
 
@@ -226,7 +226,7 @@ public class VooAssentosDAO {
         String todosAssentos = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 todosAssentos += rs.getString("nome")
@@ -257,14 +257,16 @@ public class VooAssentosDAO {
         }
     }*/
     
-    public boolean adicionaVooAssentos(VooAssentos vooAssento) {
-        String sql = "insert into vooassentos (id, idVoo, idPassageiro) values (?,?,?)";
+    public boolean adicionaVooAssentos(VooAssentos vooAssento, String assento) {
+        String sql = "insert into vooassentos (id, idVoo, idPassageiro, numeroAssento) values (?,?,?,?)";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, vooAssento.getIdAssento());
             stmt.setString(2, vooAssento.getIdVoo());
             stmt.setString(3, vooAssento.getIdPassageiro());
+            stmt.setString(4, assento);
+            
             
             stmt.execute();
             System.out.println("Novo assento cadastrado.");

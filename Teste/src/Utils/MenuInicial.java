@@ -29,7 +29,7 @@ import teste.Util;
  * @author vitor
  */
 public class MenuInicial {
-    
+
     private Scanner scanner;
     private MenuAdministrador menuADM;
     private AdministradorDAO admDAO;
@@ -42,11 +42,11 @@ public class MenuInicial {
     private VooAssentosDAO assentosDAO;
     private TicketDAO ticketDAO;
     private VooDAO voos;
-    
+
     public MenuInicial(Scanner scanner, MenuAdministrador menuADM, AdministradorDAO admDAO,
             MenuFuncionario menuFUNC, MenuPassageiro menuPASS, PassageiroDAO passDAO, VooDAO voos,
             CheckinDAO checkDAO, BoardingPassDAO boardingDAO, FuncionarioDAO funcDAO,
-            VooAssentosDAO vooAssentosDAO, TicketDAO ticketDAO, CheckinDAO checkinDAO){
+            VooAssentosDAO vooAssentosDAO, TicketDAO ticketDAO, CheckinDAO checkinDAO) {
         this.scanner = scanner;
         this.menuADM = menuADM;
         this.admDAO = admDAO;
@@ -60,7 +60,7 @@ public class MenuInicial {
         this.assentosDAO = vooAssentosDAO;
         this.voos = voos;
     }
-    
+
     public int ShowMenuInicial() {
 
         String menu = "";
@@ -81,8 +81,8 @@ public class MenuInicial {
 
         return Integer.parseInt(scanner.nextLine());
     }
-    
-    public void programaInicial(){
+
+    public void programaInicial() {
         int opcaoUsuario = 0;
 
         while (opcaoUsuario != 9) {
@@ -100,7 +100,7 @@ public class MenuInicial {
                         System.out.println("\n----- Passageiro logado -----\n");
                         Util.setPassageiroLogado(passageiroLogado);
                         System.out.println("Passageiro logado e: " + Util.getPassageiroLogado().toString());
-                        menuPASS.ShowMenuPassageiro();
+                        menuPASS.programaPassageiro();
                     } else {
                         System.out.println("\nLogin Invalido. Tente novamente.");
                     }
@@ -219,13 +219,16 @@ public class MenuInicial {
                                                     VooAssentos novoAssento = new VooAssentos();
                                                     novoAssento.setIdVoo(vooPretendido.getId());
                                                     novoAssento.setIdPassageiro(String.valueOf(novoPassageiroLogado.getId()));
-                                                    assentosDAO.adicionaVooAssentos(novoAssento);
+                                                    System.out.println("Senha:");
+                                                    System.out.println("Digite o numero do assento desejado");
+                                                    String nAssento = scanner.nextLine();
+                                                    assentosDAO.adicionaVooAssentos(novoAssento, nAssento);
                                                     //Ticket novoTicket = new Ticket(novoPassageiroLogado, vooPretendido, novoAssento);
                                                     Ticket novoTicket = new Ticket();
                                                     novoTicket.setIdVoo(vooPretendido.getId());
                                                     novoTicket.setNomePassageiro(novoPassageiroLogado.getNome());
                                                     novoTicket.setIdVooAssento(novoAssento.getIdAssento());
-                        
+
                                                     ticketDAO.adicionaTicket(novoTicket);
                                                     System.out.println("\nPassagem adquirida com sucesso, a passagem ja se encontra na sua conta\n");
                                                 } else {
@@ -441,17 +444,18 @@ public class MenuInicial {
                     System.out.println("Insira o codigo do ticket: ");
                     String codigoTicket = scanner.nextLine();
                     Ticket buscaTicket = ticketDAO.buscaTicket(codigoTicket);
-                    if(buscaTicket == null){
-                        System.out.println("Buscando cartoes de embarque");{
-                        Checkin buscaCheckin = checkDAO.retornaCheckInIDTicket(codigoTicket);
-                        if(buscaCheckin != null){
-                            System.out.println(buscaCheckin.toString());
-                            System.out.println(buscaCheckin.getEstado());
-                        } else{
-                            System.out.println("Nenhum ticket encontrado");
+                    if (buscaTicket == null) {
+                        System.out.println("Buscando cartoes de embarque");
+                        {
+                            Checkin buscaCheckin = checkDAO.retornaCheckInIDTicket(codigoTicket);
+                            if (buscaCheckin != null) {
+                                System.out.println(buscaCheckin.toString());
+                                System.out.println(buscaCheckin.getEstado());
+                            } else {
+                                System.out.println("Nenhum ticket encontrado");
+                            }
+
                         }
-                        
-                    }
                     }
                 case 9:
                     System.out.println("Cancelando a interacao");
@@ -463,7 +467,7 @@ public class MenuInicial {
         }
         System.out.println("Saindo do sistema");
     }
-    
+
     private int menuBuscarVoo() {
 
         String menu = "";

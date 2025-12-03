@@ -24,7 +24,7 @@ public class PassageiroDAO {
     public Passageiro buscarPassageiroPorDocumento(String documento) {
         String sql = "select * from passageiro where documento = ? limit 1";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, documento);
 
@@ -45,7 +45,7 @@ public class PassageiroDAO {
     public Passageiro buscarLoginPassageiro(String login, String senha) {
         String sql = "select * from passageiro where login = ? and senha = ? limit 1";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, login);
             stmt.setString(2, senha);
@@ -68,7 +68,7 @@ public class PassageiroDAO {
         String resultado = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Passageiro p = construirPassageiro(rs);
@@ -90,7 +90,7 @@ public class PassageiroDAO {
     public boolean adicionaPassageiro(Passageiro passageiro) {
         String sql = "insert into passageiro (nome, nascimento, documento, login, senha) values (?,?,?,?,?)";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql);) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql);) {
 
             stmt.setString(1, passageiro.getNome());
             stmt.setDate(2, java.sql.Date.valueOf(passageiro.getNascimento()));

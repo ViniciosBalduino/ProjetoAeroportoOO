@@ -23,7 +23,7 @@ public class ConnectionFactory {
         try{
             Properties properties = new Properties();
             properties.setProperty("user", "root");
-            properties.setProperty("password", "admin123");
+            properties.setProperty("password", "ADMTeste123#");
             properties.setProperty("useSSL", "false");
             properties.setProperty("useTimezone", "true");
             properties.setProperty("serverTimezone", "America/Sao_Paulo");
@@ -35,4 +35,28 @@ public class ConnectionFactory {
             throw new RuntimeException(e);
         }
     }
+    
+    /*
+    public Connection getConnection(){
+        try{
+            System.out.println(">> Criando conexão com MySQL...");
+
+            Properties properties = new Properties();
+            properties.setProperty("user", "root");
+            properties.setProperty("password", "ADMTeste123#");
+            properties.setProperty("useSSL", "false");
+            properties.setProperty("useTimezone", "true");
+            properties.setProperty("serverTimezone", "America/Sao_Paulo");
+            properties.setProperty("allowPublicKeyRetrieval","true");
+
+            String con = "jdbc:mysql://localhost:3306/poo_aeroporto";
+
+            System.out.println("URL usada: " + con);
+
+            return DriverManager.getConnection(con, properties);
+        } catch(SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+    */
 }

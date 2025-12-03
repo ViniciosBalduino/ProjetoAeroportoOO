@@ -25,7 +25,7 @@ public class AdministradorDAO {
     public Administrador buscarLoginAdministrador(String login, String senha) {
         String sql = "select * from administrador where login = ? and senha = ?";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, login);
             stmt.setString(2, senha);
@@ -59,7 +59,7 @@ public class AdministradorDAO {
         String resultado = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
 
@@ -87,7 +87,7 @@ public class AdministradorDAO {
     public Administrador buscarRetornarAdministradorPorID(int id) {
         String sql = "select * from administrador where id = ?";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
 
@@ -121,7 +121,7 @@ public class AdministradorDAO {
         String todosAdministradores = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 todosAdministradores += rs.getString("nome")
@@ -146,7 +146,7 @@ public class AdministradorDAO {
     public boolean adicionaAdministrador(Administrador admin) {
         String sql = "insert into administrador (nome, documento, login, senha, nascimento) values (?,?,?,?,?)";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, admin.getNome());
             stmt.setString(2, admin.getDocumento());

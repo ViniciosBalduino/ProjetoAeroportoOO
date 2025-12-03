@@ -13,6 +13,7 @@ import DAOS.PassageiroDAO;
 import DAOS.TicketDAO;
 import DAOS.VooAssentosDAO;
 import DAOS.VooDAO;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
@@ -27,7 +28,7 @@ import teste.Util;
  * @author vitor
  */
 public class MenuAdministrador {
-    
+
     private Scanner scanner;
     private VooDAO vooDAO;
     private PassageiroDAO passageiroDAO;
@@ -39,12 +40,11 @@ public class MenuAdministrador {
     private DespachoBagagemDAO despachosDAO;
     private CompAereaDAO compAereaDAO;
     private GeradorRelatorios geradorRelatorios = new GeradorRelatorios();
-    
+
     public MenuAdministrador(
             Scanner scanner, VooDAO vooDAO, PassageiroDAO passageiroDAO, CompAereaDAO compAereaDAO,
             VooAssentosDAO vooAssentosDAO, TicketDAO ticketDAO, AdministradorDAO admDAO,
-            BoardingPassDAO boardingPassDAO, CheckinDAO checkinDAO, DespachoBagagemDAO despachosDAO)
-    {
+            BoardingPassDAO boardingPassDAO, CheckinDAO checkinDAO, DespachoBagagemDAO despachosDAO) {
         this.scanner = scanner;
         this.passageiroDAO = passageiroDAO;
         this.compAereaDAO = compAereaDAO;
@@ -57,7 +57,7 @@ public class MenuAdministrador {
         this.checkinDAO = checkinDAO;
         this.despachosDAO = despachosDAO;
     }
-    
+
     public int ShowMenuAdministrador() {
 
         String menu = "";
@@ -77,8 +77,8 @@ public class MenuAdministrador {
 
         return Integer.parseInt(scanner.nextLine());
     }
-    
-     public void programaAdministrador() {
+
+    public void programaAdministrador() throws IOException {
         int opcaoUsuario = 10;
 
         while (opcaoUsuario != 9) {
@@ -99,8 +99,9 @@ public class MenuAdministrador {
                                 Passageiro passageiro = passageiroDAO.buscarPassageiroPorDocumento(documentoPassageiro);
                                 if (passageiro != null) {
                                     System.out.println("Sua senha e: " + passageiro.getSenha());
-                                } else 
+                                } else {
                                     System.out.println("Documnto inserido nao corresponde a nenhum passageiro.");
+                                }
                                 break;
                             case 9:
                                 System.out.println("Saindo do tratamento de passageiros.");
@@ -140,7 +141,7 @@ public class MenuAdministrador {
                                     novoVoo.setCapacidade(Integer.parseInt(scanner.nextLine()));
                                     novoVoo.setEstado("programado");
                                     vooDAO.adicionaVoo(novoVoo);
-                                } else{
+                                } else {
                                     System.out.println("Companhia aerea nao encontrada");
                                 }
 
@@ -264,22 +265,61 @@ public class MenuAdministrador {
                     while (opcaoRelatorio != 9) {
                         switch (opcaoRelatorio) {
                             case 1:
-                                System.out.println("\n--- Relatorio 1: Passageiros por Origem ---");
-                                System.out.println("Digite a cidade do aeroporto de ORIGEM (Ex: uberaba): ");
-                                String siglaOrigem = scanner.nextLine();
+                                System.out.println("\n--- Relatorio 1: Relatorio de Voos ---");
+                                //System.out.println("Digite a cidade do aeroporto de ORIGEM (Ex: uberaba): ");
+                                //String siglaOrigem = scanner.nextLine();
 
-                                String relatorioOrigem = geradorRelatorios.gerarRelatorioPassageirosPorOrigem(siglaOrigem);
-                                System.out.println(relatorioOrigem);
+                                //String relatorioOrigem = geradorRelatorios.gerarRelatorioPassageirosPorOrigem(siglaOrigem);
+                                if (geradorRelatorios.gerarRelatorioVoos()) {
+                                    System.out.println("Relatorio gerado com sucesso, procure na pasta files");
+                                }
+
                                 break;
                             case 2:
-                                System.out.println("\n--- Relatorio 2: Passageiros por Destino ---");
-                                System.out.println("Digite a cidade do aeroporto de DESTINO (Ex: uberlandia): ");
-                                String siglaDestino = scanner.nextLine();
+                                System.out.println("\n--- Relatorio 2: Relatorio de passageiros ---");
+                                //System.out.println("Digite a cidade do aeroporto de DESTINO (Ex: uberlandia): ");
+                                //String siglaDestino = scanner.nextLine();
 
-                                String relatorioDestino = geradorRelatorios.gerarRelatorioPassageirosPorDestino(siglaDestino);
-                                System.out.println(relatorioDestino);
+                                //String relatorioDestino = geradorRelatorios.gerarRelatorioPassageirosPorDestino(siglaDestino);
+                                //System.out.println(relatorioDestino);
+                                if (geradorRelatorios.gerarRelatorioPassageiros()) {
+                                    System.out.println("Relatorio gerado com sucesso, procure na pasta files");
+                                }
                                 break;
                             case 3:
+                                System.out.println("\n--- Relatorio 2: Relatorio de Companhias ---");
+                                //System.out.println("Digite a cidade do aeroporto de DESTINO (Ex: uberlandia): ");
+                                //String siglaDestino = scanner.nextLine();
+
+                                //String relatorioDestino = geradorRelatorios.gerarRelatorioPassageirosPorDestino(siglaDestino);
+                                //System.out.println(relatorioDestino);
+                                if (geradorRelatorios.gerarRelatorioCompanhias()) {
+                                    System.out.println("Relatorio gerado com sucesso, procure na pasta files");
+                                }
+                                break;
+                            case 4:
+                                System.out.println("\n--- Relatorio 2: Relatorio de Checkin ---");
+                                //System.out.println("Digite a cidade do aeroporto de DESTINO (Ex: uberlandia): ");
+                                //String siglaDestino = scanner.nextLine();
+
+                                //String relatorioDestino = geradorRelatorios.gerarRelatorioPassageirosPorDestino(siglaDestino);
+                                //System.out.println(relatorioDestino);
+                                if (geradorRelatorios.gerarRelatorioChekin()) {
+                                    System.out.println("Relatorio gerado com sucesso, procure na pasta files");
+                                }
+                                break;
+                            case 5:
+                                System.out.println("\n--- Relatorio 2: Relatorio de BoardinPass ---");
+                                //System.out.println("Digite a cidade do aeroporto de DESTINO (Ex: uberlandia): ");
+                                //String siglaDestino = scanner.nextLine();
+
+                                //String relatorioDestino = geradorRelatorios.gerarRelatorioPassageirosPorDestino(siglaDestino);
+                                //System.out.println(relatorioDestino);
+                                if (geradorRelatorios.gerarRelatorioBoarding()) {
+                                    System.out.println("Relatorio gerado com sucesso, procure na pasta files");
+                                }
+                                break;
+                            case 8:
                                 System.out.println("\n--- Relatorio 3: Arrecadacao por Companhia ---");
                                 System.out.println("Digite a sigla da Companhia Aerea (Ex: Gal): ");
                                 String siglaComp = scanner.nextLine();
@@ -316,8 +356,8 @@ public class MenuAdministrador {
 
         }
     }
-    
-     private int menuTratarPassageiro() {
+
+    private int menuTratarPassageiro() {
         String menu = "";
         menu += "\n=========================================\n";
         menu += "  SEJA BEM VINDO AO TRATAMENTO DE USUARIOS ";
@@ -331,8 +371,8 @@ public class MenuAdministrador {
 
         return Integer.parseInt(scanner.nextLine());
     }
-     
-     private int menuTratarVoos() {
+
+    private int menuTratarVoos() {
         String menu = "";
         menu += "\n=========================================\n";
         menu += "  SEJA BEM VINDO AO TRATAMENTO DE VOOS ";
@@ -347,8 +387,8 @@ public class MenuAdministrador {
 
         return Integer.parseInt(scanner.nextLine());
     }
-     
-     private int menuTratarCompAereas() {
+
+    private int menuTratarCompAereas() {
         String menu = "";
         menu += "\n=========================================\n";
         menu += "SEJA BEM VINDO AO TRATAMENTO DE COMPANHIAS";
@@ -368,9 +408,12 @@ public class MenuAdministrador {
         menu += "\n=========================================\n";
         menu += "     SEJA BEM VINDO AOS RELATORIOS     ";
         menu += "\n=========================================\n";
-        menu += "\n1 - Passageiros que deixaram um determinado aeroporto (Origem).";
-        menu += "\n2 - Passageiros que chegaram em um determinado aeroporto (Destino).";
-        menu += "\n3 - Valor arrecadado por companhia aerea em um periodo.";
+        menu += "\n1 - Relatorio de Voos.";
+        menu += "\n2 - Relatorio de Passageiors";
+        menu += "\n3 - Relatorio de Companhias";
+        menu += "\n4 - Relatorio de Chekin";
+        menu += "\n5 - Relatorio de BoardingPass";
+        menu += "\n8 - Valor arrecadado por companhia aerea em um periodo.";
         menu += "\n9 - Para sair do menu\n";
         menu += "\nQual sua opcao ? R: ";
 

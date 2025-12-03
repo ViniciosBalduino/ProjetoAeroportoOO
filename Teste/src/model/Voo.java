@@ -20,14 +20,14 @@ public class Voo {
     private LocalDate data;
     private LocalTime duracao;
     private LocalTime horario;
-    private String siglaCompanhia;
+    private String companhia;
     private int capacidade;
     private String estado;
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
 
     public Voo(String companhia){
-        this.siglaCompanhia = companhia;
+        this.companhia = companhia;
     }
     
     public String getId() {
@@ -80,11 +80,11 @@ public class Voo {
     
 
     public String getSiglaCompanhia() {
-        return siglaCompanhia;
+        return companhia;
     }
 
     public void setSiglaCompanhia(String siglaCompanhia) {
-        this.siglaCompanhia = siglaCompanhia;
+        this.companhia = siglaCompanhia;
     }
 
     public int getCapacidade() {
@@ -147,7 +147,7 @@ public class Voo {
     public String toString() {
         String voo = "";
         voo += "\nID = " + this.id;
-        voo += "\nCompanhia = " + this.siglaCompanhia;
+        voo += "\nCompanhia = " + this.companhia;
         voo += "\nOrigem = " + this.origem;
         voo += "\nDestino = " + this.destino;
         voo += "\nDia do voo = " + this.data;

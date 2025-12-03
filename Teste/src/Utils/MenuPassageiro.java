@@ -77,21 +77,29 @@ public class MenuPassageiro {
                     System.out.println("Digite a id do voo dsejado");
                     String idVoo = scanner.nextLine();
                     Voo vooEscolhido = vooDAO.buscarRetornarVooPorID(idVoo);
-                    //System.out.println(vooEscolhido);
+                    System.out.println(vooEscolhido);
                     //System.out.println(vooAssentos.mostrarTodosAssentosPorVoo(vooEscolhido));
                     if (vooAssentosDAO.contarAssentosPorVoo(idVoo) >= vooEscolhido.getCapacidade()) {
                         System.out.println("\nVoo sem assentos disponiveis, por favor busque outro.");
                     } else {
                         //VooAssentos assentoNovo = new VooAssentos(vooEscolhido, pLogado);
                         VooAssentos assentoNovo = new VooAssentos();
+                        assentoNovo.setIdAssento(idVoo + pLogado.getId());
                         assentoNovo.setIdPassageiro(String.valueOf(pLogado.getId()));
                         assentoNovo.setIdVoo(idVoo);
-                        vooAssentosDAO.adicionaVooAssentos(assentoNovo);
+                        System.out.println("Digite o numero do assento desejado");
+                        String nAssento = scanner.nextLine();
+                        
+                        vooAssentosDAO.adicionaVooAssentos(assentoNovo, nAssento);
+                        
                         //Ticket novoTicket = new Ticket(pLogado, vooEscolhido, assentoNovo);
                         Ticket novoTicket = new Ticket();
+                        novoTicket.setId(idVoo + pLogado.getId() + vooEscolhido.getData());
                         novoTicket.setIdVoo(idVoo);
                         novoTicket.setNomePassageiro(pLogado.getNome());
                         novoTicket.setIdVooAssento(assentoNovo.getIdAssento());
+                        novoTicket.setDataCriacao(LocalDate.now());
+                        novoTicket.setDataModificacao(LocalDate.now());
                         ticketDAO.adicionaTicket(novoTicket);
                         System.out.println("PASSAGEM COMPRADA COM SUCESSO.");
                     }

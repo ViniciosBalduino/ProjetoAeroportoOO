@@ -39,7 +39,7 @@ public class CompAereaDAO {
     public CompAerea buscarRetornarCompSigla(String sigla) {
         String sql = "select * from companhiaaerea where abreviacao = ?";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, sigla);
  
@@ -81,7 +81,7 @@ public class CompAereaDAO {
         String resultado = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, sigla);
 
@@ -129,7 +129,7 @@ public class CompAereaDAO {
         String todasCompanhias = "";
         boolean vazio = true;
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 todasCompanhias += rs.getString("nome")
@@ -164,7 +164,7 @@ public class CompAereaDAO {
     public boolean adicionaComp(CompAerea comp) {
         String sql = "insert into companhiaaerea (id, nome, abreviacao) values (?,?,?)";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
             
             stmt.setString(1, comp.getId());
             stmt.setString(2, comp.getNome());

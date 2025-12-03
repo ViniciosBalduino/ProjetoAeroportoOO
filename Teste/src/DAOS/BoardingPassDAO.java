@@ -21,7 +21,7 @@ public class BoardingPassDAO {
         String sql = "insert into boardingpass (nomepassageiro, idvoo, idassento, numeroassento, idticket, datacriacao) "
                 + "values (?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, boarding.getNomePassageiro());
             stmt.setString(2, boarding.getIdVoo());
@@ -42,7 +42,7 @@ public class BoardingPassDAO {
     public BoardingPass buscarPorIDTicket(String idTicket) {
         String sql = "select * from boardingpass where idticket = ?";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, idTicket);
 
@@ -71,7 +71,7 @@ public class BoardingPassDAO {
     public BoardingPass buscarPorPassageiroEVoo(String nomePassageiro, String idVoo) {
         String sql = "select * from boardingpass where nomepassageiro = ? and idvoo = ?";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
 
             stmt.setString(1, nomePassageiro);
             stmt.setString(2, idVoo);
@@ -101,7 +101,7 @@ public class BoardingPassDAO {
         String sql = "select nomepassageiro, idvoo, idassento, numeroassento, idticket from boardingpass";
         String todos = "";
 
-        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = new Utils.ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 todos
