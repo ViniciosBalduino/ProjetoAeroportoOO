@@ -4,91 +4,111 @@
  */
 package DAOS;
 
+import Utils.ConnectionFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 import model.Funcionario;
-import java.time.LocalDate;
 
 /**
  *
  * @author vitor
  */
 public class FuncionarioDAO {
-    Funcionario[] funcionarios = new Funcionario[5];
-    
+
     public FuncionarioDAO() {
-        Funcionario f1 = new Funcionario();
-        f1.setNome("Ana Clara Souza");
-        f1.setNascimento(LocalDate.of(1990, 10, 15));
-        f1.setDocumento("11122233344");
-        f1.setLogin("ana");
-        f1.setSenha("ana123");
-        this.adicionaFuncionario(f1);
 
-        Funcionario f2 = new Funcionario();
-        f2.setNome("Bruno Silva");
-        f2.setNascimento(LocalDate.of(1985, 7, 30));
-        f2.setDocumento("55566677788");
-        f2.setLogin("bruno");
-        f2.setSenha("bruno123");
-        this.adicionaFuncionario(f2);
-
-        Funcionario f3 = new Funcionario();
-        f3.setNome("Carla Mendes");
-        f3.setNascimento(LocalDate.of(2001, 1, 12));
-        f3.setDocumento("99900011122");
-        f3.setLogin("carla");
-        f3.setSenha("carla123");
-        this.adicionaFuncionario(f3);
-        
-        Funcionario f4 = new Funcionario();
-        f4.setNome("joao");
-        f4.setNascimento(LocalDate.of(2001, 1, 12));
-        f4.setDocumento("99900011122");
-        f4.setLogin("123");
-        f4.setSenha("123");
-        this.adicionaFuncionario(f4);
     }
-    
-    public Funcionario buscarLoginFuncionario(String login, String senha){
-        for(int i=0; i<funcionarios.length; i++){
-            if(funcionarios[i]!=null && funcionarios[i].getLogin().equals(login) && 
-                    funcionarios[i].getSenha().equals(senha)){
-                return funcionarios[i];
+
+    public Funcionario buscarLoginFuncionario(String login, String senha) {
+        String sql = "select * from funcionario where login = ? and senha = ? limit 1";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, login);
+            stmt.setString(2, senha);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return construirFuncionario(rs);
+                }
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+
         return null;
     }
-    
-    boolean adicionaFuncionario(Funcionario func){
-        int posicao = this.posicaoLivre();
-        if(posicao != -1){
-            funcionarios[posicao] = func;
-            return true;
-        } else {
-            return false;
+
+    public boolean adicionaFuncionario(Funcionario func) {
+        String sql = "insert into funcionario (nome, nascimento, documento, login, senha, datacriacao, datamodificacao) "
+                + "values (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, func.getNome());
+            stmt.setDate(2, java.sql.Date.valueOf(func.getNascimento()));
+            stmt.setString(3, func.getDocumento());
+            stmt.setString(4, func.getLogin());
+            stmt.setString(5, func.getSenha());
+            stmt.setDate(6, java.sql.Date.valueOf(func.getDataCriacao()));
+            stmt.setDate(7, java.sql.Date.valueOf(func.getDataModificacao()));
+
+            int linhas = stmt.executeUpdate();
+            System.out.println("Novo funcionario adicionado.");
+            return linhas > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
-    
-    public String mostrarTodos(){
-        boolean vazio = true;
+
+    public String mostrarTodos() {
+        String sql = "select * from funcionario";
         String todosFuncionarios = "";
-        for(int i=0; i<funcionarios.length; i++){
-            if(funcionarios[i] != null){
-                todosFuncionarios += funcionarios[i].toString();
+        boolean vazio = true;
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Funcionario f = construirFuncionario(rs);
+                todosFuncionarios += f.toString();
                 vazio = false;
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        if(vazio){
-            todosFuncionarios += "Nao existe nenhum funcionario cadastrado";
-        } 
+
+        if (vazio) {
+            todosFuncionarios = "nao existe nenhum funcionario cadastrado";
+        }
+
         return todosFuncionarios;
     }
-    
-    private int posicaoLivre(){
-        for(int i=0; i<funcionarios.length; i++){
-            if(funcionarios[i] == null){
-                return i;
-            }
+
+    private Funcionario construirFuncionario(ResultSet rs) throws SQLException {
+        Funcionario f = new Funcionario();
+        f.setId(rs.getInt("id"));
+        f.setNome(rs.getString("nome"));
+        java.sql.Date nascimentoSql = rs.getDate("nascimento");
+        if (nascimentoSql != null) {
+            f.setNascimento(nascimentoSql.toLocalDate());
         }
-        return -1;
+        f.setDocumento(rs.getString("documento"));
+        f.setLogin(rs.getString("login"));
+        f.setSenha(rs.getString("senha"));
+        java.sql.Date dc = rs.getDate("datacriacao");
+        if (dc != null) {
+            f.setDataCriacao(dc.toLocalDate());
+        }
+        java.sql.Date dm = rs.getDate("datamodificacao");
+        if (dm != null) {
+            f.setDataModificacao(dm.toLocalDate());
+        }
+        return f;
     }
+
 }

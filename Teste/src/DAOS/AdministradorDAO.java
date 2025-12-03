@@ -5,107 +5,163 @@
 package DAOS;
 
 import model.Administrador;
-import java.time.LocalDate;
+import Utils.ConnectionFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.Date;
 
 /**
  *
  * @author vinic
  */
 public class AdministradorDAO {
-    Administrador[] admins = new Administrador[5];
 
     public AdministradorDAO() {
         
-        Administrador ad1 = new Administrador();
-        ad1.setNome("Vinicios Balduino");
-        ad1.setNascimento(LocalDate.of(1996, 4, 26));
-        ad1.setDocumento("99988877766");
-        ad1.setLogin("VBalduino");
-        ad1.setSenha("Admin");
-        this.adicionaAdministrador(ad1);
-        
-        Administrador ad2 = new Administrador();
-        ad2.setNome("Vitor Ferreira");
-        ad2.setNascimento(LocalDate.of(1996, 4, 26));
-        ad2.setDocumento("11122233344");
-        ad2.setLogin("VFerreira");
-        ad2.setSenha("Admin");
-        this.adicionaAdministrador(ad2);
-        
-        Administrador ad3 = new Administrador();
-        ad3.setNome("VAdministrador GEN");
-        ad3.setNascimento(LocalDate.of(1996, 4, 26));
-        ad3.setDocumento("00000000000");
-        ad3.setLogin("ADMIN");
-        ad3.setSenha("ADMIN");
-        this.adicionaAdministrador(ad3);
     }    
     
-    public Administrador buscarLoginAdministrador(String login, String senha){
-        for(int i=0; i<admins.length; i++){
-            if(admins[i]!=null && admins[i].getLogin().equals(login) && 
-                    admins[i].getSenha().equals(senha)){
-                return admins[i];
+    public Administrador buscarLoginAdministrador(String login, String senha) {
+        String sql = "select * from administrador where login = ? and senha = ?";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, login);
+            stmt.setString(2, senha);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+
+                    Administrador admin = new Administrador();
+                    admin.setId(rs.getInt("id"));
+                    admin.setNome(rs.getString("nome"));
+                    admin.setLogin(rs.getString("login"));
+                    admin.setSenha(rs.getString("senha"));
+                    admin.setNascimento(rs.getDate("nascimento").toLocalDate());
+                    admin.setDataCriacao(rs.getDate("dataCriacao").toLocalDate());
+                    admin.setDataModificacao(rs.getDate("dataModificacao").toLocalDate());
+
+                    return admin;
+                }
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+
+        return null;
+    }
+
+    
+    public String buscarAdministradorPorID(int id) {
+        String sql = "select nome, documento from administrador where id = ?";
+        String resultado = "";
+        boolean vazio = true;
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    resultado += rs.getString("nome")
+                            + " - "
+                            + rs.getString("documento");
+                    vazio = false;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (vazio) {
+            resultado = "Nao existe administrador com este ID cadastrado";
+        }
+
+        return resultado;
+    }
+
+    
+    public Administrador buscarRetornarAdministradorPorID(int id) {
+        String sql = "select * from administrador where id = ?";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+
+                    Administrador admin = new Administrador();
+
+                    admin.setId(rs.getInt("id"));
+                    admin.setNome(rs.getString("nome"));
+                    admin.setDocumento(rs.getString("documento"));
+                    admin.setLogin(rs.getString("login"));
+                    admin.setSenha(rs.getString("senha"));
+
+                    admin.setDataCriacao(rs.getDate("datacriacao").toLocalDate());
+                    admin.setDataModificacao(rs.getDate("datamodificacao").toLocalDate());
+
+                    return admin;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         return null;
     }
     
-    public String buscarAdministradorPorID(int id){
-        boolean vazio = true;
-        String selecaoAdministradores = "";
-        for(int i=0; i<admins.length; i++){
-            if(admins[i]!=null && admins[i].getId() == id){
-                selecaoAdministradores += admins[i].toString();
-                vazio = false;
-            }
-        }
-        if(vazio){
-            selecaoAdministradores = "Nao existe administrador com este ID cadastrado";
-        }
-        return selecaoAdministradores;
-    }
-    
-    public Administrador buscarRetornarAdministradorPorID(int id){
-        for(int i=0; i<admins.length; i++){
-            if(admins[i]!=null && admins[i].getId() == id){
-                return admins[i];
-            }
-        }
-        return null;
-    }
-    
-    public String mostrarTodos(){
-        boolean vazio = true;
+    public String mostrarTodosAdministradores() {
+        String sql = "select nome, documento from administrador";
         String todosAdministradores = "";
-        for(int i=0; i<admins.length; i++){
-            if(admins[i] != null){
-                todosAdministradores += admins[i].toString();
+        boolean vazio = true;
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                todosAdministradores += rs.getString("nome")
+                        + " - "
+                        + rs.getString("documento")
+                        + " | ";
                 vazio = false;
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        if(vazio){
-            todosAdministradores += "Nao existe nenhum administrador cadastrado";
-        } 
+
+        if (vazio) {
+            todosAdministradores = "Nao existe nenhum administrador cadastrado";
+        }
+
         return todosAdministradores;
     }
+
     
-    public boolean adicionaAdministrador(Administrador admin){
-        int posicao = this.posicaoLivre();
-        if(posicao != -1){
-            admins[posicao] = admin;
-            return true;
-        } else{
-            return false;
+    public boolean adicionaAdministrador(Administrador admin) {
+        String sql = "insert into administrador (nome, documento, login, senha, nascimento) values (?,?,?,?,?)";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, admin.getNome());
+            stmt.setString(2, admin.getDocumento());
+            stmt.setString(3, admin.getLogin());
+            stmt.setString(4, admin.getSenha());
+            stmt.setDate(5, java.sql.Date.valueOf(admin.getNascimento()));
+
+            stmt.execute();
+            System.out.println("Novo administrador adicionado.");
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+
+        return false;
     }
-        
-    private int posicaoLivre(){
-        for(int i=0; i<admins.length; i++){
-            if(admins[i] == null){
-                return i;
-            }
-        }
-        return -1;
-    }
+
 }

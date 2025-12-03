@@ -4,95 +4,109 @@
  */
 package DAOS;
 
+import Utils.ConnectionFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 import model.Aeroporto;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 
 /**
  *
  * @author vinic
  */
 public class AeroportoDAO {
-    Aeroporto[] aeroportos = new Aeroporto[5];
 
     public AeroportoDAO() {
         
-        Aeroporto a1 = new Aeroporto();
-        a1.setNome("Aeroporto Galeao");
-        a1.setAbreviacao("GAL");
-        a1.setCidade("Rio de Janeiro");
-        this.adicionaAeroporto(a1);
-        
-        Aeroporto a2 = new Aeroporto();
-        a2.setNome("Aeroporto Galeao 2");
-        a2.setAbreviacao("Gal2");
-        a2.setCidade("Rio de Janeiro 2");
-        this.adicionaAeroporto(a2);
-        
-        Aeroporto a3 = new Aeroporto();
-        a3.setNome("Aeroporto Galeao 3");
-        a3.setAbreviacao("Gal3");
-        a3.setCidade("Rio de Janeiro 3");
-        this.adicionaAeroporto(a3);
     }    
     
     public String buscarAeroportoPorSiglaString(String sigla){
-        boolean vazio = true;
-        String selecaoAeroportos = "";
-        for(int i=0; i<aeroportos.length; i++){
-            if(aeroportos[i]!=null && aeroportos[i].getAbreviacao().toUpperCase().equals(sigla)){
-                selecaoAeroportos += aeroportos[i].toString();
-                vazio = false;
+        String sql = "select nome from aeroporto where abreviacao = ?";
+        String aeroportoComEssaSigla = "";
+        
+        try(Connection con = new ConnectionFactory().getConnection();
+                PreparedStatement stmt = con.prepareStatement(sql);){
+            
+            stmt.setString(1, sigla);
+            try(ResultSet rs = stmt.executeQuery();){
+                while(rs.next()){
+                    aeroportoComEssaSigla += rs.getString("nome") + " | ";
+                }
             }
+            
+        }catch(SQLException e){
+            throw new RuntimeException(e);
         }
-        if(vazio){
-            selecaoAeroportos = "Nao existe aeroporto com esta sigla cadastrado";
+        if(aeroportoComEssaSigla.equalsIgnoreCase("")){
+            return "Nenhum aeroporto encontrado";
         }
-        return selecaoAeroportos;
+        return aeroportoComEssaSigla;
     }
     
     public Aeroporto buscarRetornarAeroportoPorSigla(String sigla){
-        for(int i=0; i<aeroportos.length; i++){
-            if(aeroportos[i]!=null && aeroportos[i].getAbreviacao().toUpperCase().equals(sigla)){
-                return aeroportos[i];
-
+        String sql = "select * from aeroporto where abreviacao = ?";
+        Aeroporto aeroportoComEssaSigla = new Aeroporto();
+        
+        try(Connection con = new ConnectionFactory().getConnection();
+                PreparedStatement stmt = con.prepareStatement(sql);){
+            
+            stmt.setString(1, sigla);
+            try(ResultSet rs = stmt.executeQuery();){
+                if(rs.next()){
+                    aeroportoComEssaSigla.setNome(rs.getString("nome"));
+                    aeroportoComEssaSigla.setCidade(rs.getString("cidade"));
+                    aeroportoComEssaSigla.setAbreviacao(rs.getString("abreviacao"));
+                    aeroportoComEssaSigla.setId(rs.getInt("id"));
+                    aeroportoComEssaSigla.setDataModificacao(rs.getDate("dataModificacao").toLocalDate());
+                    aeroportoComEssaSigla.setDataCriacao(rs.getDate("dataCriacao").toLocalDate());
+                    
+                    return aeroportoComEssaSigla;
+                }
+            }catch(SQLException e){
+                throw new RuntimeException(e);
             }
+            
+        }catch(SQLException e){
+            throw new RuntimeException(e);
         }
         return null;
     }
     
-    public String mostrarTodos(){
-        boolean vazio = true;
+    public String mostrarTodosAeroportos(){
+        String sql = "select nome, abreviacao from aeroporto";
         String todosAeroportos = "";
-        for(int i=0; i<aeroportos.length; i++){
-            if(aeroportos[i] != null){
-                todosAeroportos += aeroportos[i].toString();
-                vazio = false;
+        
+        try(Connection con = new ConnectionFactory().getConnection();
+                PreparedStatement stmt = con.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery();){
+            
+            while(rs.next()){
+                todosAeroportos += rs.getString("nome") + "-" + rs.getString("abreviacao") + " | ";
             }
+            
+        }catch(SQLException e){
+            throw new RuntimeException(e);
         }
-        if(vazio){
-            todosAeroportos += "Nao existe nenhum aeroporto cadastrado";
-        } 
         return todosAeroportos;
     }
     
-    boolean adicionaAeroporto(Aeroporto aeroporto){
-        int posicao = this.posicaoLivre();
-        if(posicao != -1){
-            aeroportos[posicao] = aeroporto;
-            return true;
-        } else{
-            return false;
-        }
-    }
+    public boolean adicionaAeroporto(Aeroporto aeroporto){
+        String sql = "insert into aeroporto (nome, cidade, abreviacao) values (?,?,?)";
         
-    private int posicaoLivre(){
-        for(int i=0; i<aeroportos.length; i++){
-            if(aeroportos[i] == null){
-                return i;
-            }
+        try(Connection con = new ConnectionFactory().getConnection();
+                PreparedStatement stmt = con.prepareStatement(sql);){
+            
+            stmt.setString(1, aeroporto.getNome());
+            stmt.setString(2, aeroporto.getCidade());
+            stmt.setString(3, aeroporto.getAbreviacao());
+            stmt.execute();
+            System.out.println("Novo aeroporto adicionado.");
+            
+        }catch(SQLException e){
+            throw new RuntimeException(e);
         }
-        return -1;
+        return true;
     }
+    
 }

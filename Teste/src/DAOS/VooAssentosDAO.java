@@ -5,43 +5,35 @@
 package DAOS;
 
 import DAOS.PassageiroDAO;
+import Utils.ConnectionFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import model.Voo;
 import model.VooAssentos;
 import model.Passageiro;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
+import model.Administrador;
 
 /**
  *
  * @author vinic
  */
 public class VooAssentosDAO {
-    VooAssentos[] vooAssentos = new VooAssentos[100];
+    //VooAssentos[] vooAssentos = new VooAssentos[100];
     
-    private VooDAO voos;
-    private PassageiroDAO passageiros;
+    //private VooDAO voos;
+    //private PassageiroDAO passageiros;
 
     public VooAssentosDAO(VooDAO voos, PassageiroDAO passageiros) {
-        
-        this.voos = voos;
-        this.passageiros = passageiros;
-        
-        VooAssentos v1 = new VooAssentos(voos.buscarRetornarVooPorID("Gal-V1"), passageiros.buscarRetornarPassageiroPorID(1));
-        //v1.setIdPassageiro(passageiros.buscarRetornarPassageiroPorID(1).getId());
-        //System.out.println(v1);
-        this.adicionaVooAssentos(v1);
-      
-        VooAssentos v2 = new VooAssentos(voos.buscarRetornarVooPorID("Gal-V1"), passageiros.buscarRetornarPassageiroPorID(2));
-        //v2.setIdPassageiro(passageiros.buscarRetornarPassageiroPorID(2).getId());
-        this.adicionaVooAssentos(v2);
-        
-        VooAssentos v3 = new VooAssentos(voos.buscarRetornarVooPorID("Gal 2-V2"), passageiros.buscarRetornarPassageiroPorID(3));
-        //v1.setIdPassageiro(passageiros.buscarRetornarPassageiroPorID(3).getId());
-        this.adicionaVooAssentos(v3);
-        //System.out.println(vooAssentos[0]);
+    
     }
 
+    /*
     public int contarAssentosPorVoo(String idVoo){
         int assentosDisponiveis = 0;
         for(int i=0; i < vooAssentos.length; i++){
@@ -50,7 +42,33 @@ public class VooAssentosDAO {
         }
         return assentosDisponiveis;
     }
+    */
     
+    public int contarAssentosPorVoo(String idVoo) {
+        String sql = "select count (*) from vooassentos where idVoo = ? ";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, idVoo);
+            //stmt.setString(2, idPassageiro);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+
+                    int qtassentos = rs.getInt("count(*)");
+                    
+                    return qtassentos;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return 0;
+    }
+    
+    /*
     public VooAssentos buscarAssentoPorVooEPassageiro(String idVoo, int idPassageiro) {
         for (int i = 0; i < vooAssentos.length; i++) {
             if (vooAssentos[i] != null &&
@@ -60,8 +78,39 @@ public class VooAssentosDAO {
             }
         }
         return null;
+    }*/
+    
+    public VooAssentos buscarAssentoPorVooEPassageiro(String idVoo, String idPassageiro) {
+        String sql = "select * from vooassentos where idVoo = ? and idPassageiro = ?";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, idVoo);
+            stmt.setString(2, idPassageiro);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+
+                    VooAssentos voo = new VooAssentos();
+
+                    voo.setIdAssento(rs.getString("id"));
+                    voo.setIdVoo(rs.getString("idVoo"));
+                    voo.setIdPassageiro(rs.getString("idPassageiro"));
+                    voo.setDataCriacao(rs.getDate("dataCriacao").toLocalDate());
+                    voo.setDataModificacao(rs.getDate("dataModificacao").toLocalDate());
+                    
+                    return voo;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
     }
     
+    /*
     public String buscarvooAssentosPorID(String idAssento){
         boolean vazio = true;
         String selecaoAssentos = "";
@@ -75,8 +124,40 @@ public class VooAssentosDAO {
             selecaoAssentos = "Nao existe assento com este ID cadastrado";
         }
         return selecaoAssentos;
+    }*/
+    
+    public String buscarvooAssentosPorID(String idAssento){
+        String sql = "select id, idVoo, idPassageiro from vooassentos where id = ?";
+        String resultado = "";
+        boolean vazio = true;
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, idAssento);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    resultado += rs.getString("id")
+                            + " - "
+                            + rs.getString("idVoo")
+                            + " - "
+                            + rs.getString("idPassageiro");
+                    vazio = false;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (vazio) {
+            resultado = "Nao existe assento com este ID cadastrado";
+        }
+
+        return resultado;
     }
     
+    /*
     public String mostrarTodosAssentosPorVoo(Voo voo){
         boolean vazio = true;
         String todosPassageiros = "";
@@ -91,94 +172,39 @@ public class VooAssentosDAO {
         } 
         return todosPassageiros;
     }
-    
-    //Relatorio 1: Passageiros que deixaram um determinado aeroporto.
-    public String gerarRelatorioPassageirosPorOrigem(String origem) {
-        String relatorio = "--- Passageiros que sairam de " + origem.toUpperCase() + " ---\n";
-        boolean encontrou = false;
+    */
+    public String mostrarTodosAssentosPorVoo(String idVoo){
+        String sql = "select id, idVoo, idPassageiro from vooassentos where idVoo = ?";
+        String resultado = "";
+        boolean vazio = true;
+        //List<VooAssentos> listaAssentos = new ArrayList<>();
+        
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+            
+            stmt.setString(1, idVoo);
 
-        // Itera por todos os assentos vendidos
-        for (int i = 0; i < vooAssentos.length; i++) {
-            if (vooAssentos[i] != null) {
-                VooAssentos assento = vooAssentos[i];
-                // Busca o Voo deste assento
-                Voo voo = this.voos.buscarRetornarVooPorID(assento.getIdVoo()); //
-
-                // Verifica se o Voo existe e se a origem bate
-                if (voo != null && voo.getOrigem().equalsIgnoreCase(origem)) {
-                    // Busca o Passageiro deste assento
-                    Passageiro p = this.passageiros.buscarRetornarPassageiroPorID(assento.getIdPassageiro()); //
-
-                    if (p != null) {
-                        relatorio += "ID: " + p.getId() + ", Nome: " + p.getNome()
-                                + ", Documento: " + p.getDocumento()
-                                + " (Voo: " + voo.getId() + ")\n";
-                        encontrou = true;
-                    }
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    resultado += rs.getString("id")
+                            + " - "
+                            + rs.getString("idVoo")
+                            + " - "
+                            + rs.getString("idPassageiro");
+                    vazio = false;
                 }
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
-        if (!encontrou) {
-            return "Nenhum passageiro encontrado para esta origem.";
+        if (vazio) {
+            resultado = "Nao existe assento ocupado neste voo";
         }
-        return relatorio;
+        return resultado;
     }
     
-    public String gerarRelatorioPassageirosPorDestino(String destino) {
-        String relatorio = "--- Passageiros que chegaram em " + destino.toUpperCase() + " ---\n";
-        boolean encontrou = false;
-
-        for (int i = 0; i < vooAssentos.length; i++) {
-            if (vooAssentos[i] != null) {
-                VooAssentos assento = vooAssentos[i];
-                Voo voo = this.voos.buscarRetornarVooPorID(assento.getIdVoo());
-
-                // A unica mudanca e aqui:
-                if (voo != null && voo.getDestino().equalsIgnoreCase(destino)) {
-                    Passageiro p = this.passageiros.buscarRetornarPassageiroPorID(assento.getIdPassageiro());
-
-                    if (p != null) {
-                        relatorio += "ID: " + p.getId() + ", Nome: " + p.getNome()
-                                + ", Documento: " + p.getDocumento()
-                                + " (Voo: " + voo.getId() + ")\n";
-                        encontrou = true;
-                    }
-                }
-            }
-        }
-
-        if (!encontrou) {
-            return "Nenhum passageiro encontrado para este destino.";
-        }
-        return relatorio;
-    }
-    
-    public int calcularArrecadacao(String siglaCompanhia, LocalDate inicio, LocalDate fim) {
-        int totalArrecadado = 0;
-
-        for (int i = 0; i < vooAssentos.length; i++) {
-            if (vooAssentos[i] != null) {
-                VooAssentos assento = vooAssentos[i];
-                Voo voo = this.voos.buscarRetornarVooPorID(assento.getIdVoo());
-
-                if (voo != null) {
-                    boolean companhiaMatch = voo.getCompanhia().getAbreviacao().equalsIgnoreCase(siglaCompanhia);
-
-                    LocalDate dataVenda = assento.getDataCriacao();
-
-                    // Verifica se a data esta no intervalo (inclusivo)
-                    boolean dataMatch = (!dataVenda.isBefore(inicio)) && (!dataVenda.isAfter(fim));
-
-                    if (companhiaMatch && dataMatch) {
-                        totalArrecadado += assento.getValor();
-                    }
-                }
-            }
-        }
-        return totalArrecadado;
-    }
-    
+    /*
     public String mostrarTodos(){
         boolean vazio = true;
         String todosPassageiros = "";
@@ -193,7 +219,34 @@ public class VooAssentosDAO {
         } 
         return todosPassageiros;
     }
+    */
     
+    public String mostrarTodos(){
+        String sql = "select id, idVoo, idPassageiro from vooassentos";
+        String todosAssentos = "";
+        boolean vazio = true;
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                todosAssentos += rs.getString("nome")
+                        + " - "
+                        + rs.getString("documento")
+                        + " | ";
+                vazio = false;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (vazio) {
+            todosAssentos = "Nao existe nenhum assento cadastrado";
+        }
+
+        return todosAssentos;
+    }
+    /*
     public boolean adicionaVooAssentos(VooAssentos vooAssento){
         int posicao = this.posicaoLivre();
         if(posicao != -1){
@@ -202,8 +255,28 @@ public class VooAssentosDAO {
         } else{
             return false;
         }
+    }*/
+    
+    public boolean adicionaVooAssentos(VooAssentos vooAssento) {
+        String sql = "insert into vooassentos (id, idVoo, idPassageiro) values (?,?,?)";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, vooAssento.getIdAssento());
+            stmt.setString(2, vooAssento.getIdVoo());
+            stmt.setString(3, vooAssento.getIdPassageiro());
+            
+            stmt.execute();
+            System.out.println("Novo assento cadastrado.");
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
     }
-        
+    
+    /*    
     private int posicaoLivre(){
         for(int i=0; i<vooAssentos.length; i++){
             if(vooAssentos[i] == null){
@@ -211,5 +284,5 @@ public class VooAssentosDAO {
             }
         }
         return -1;
-    }
+    }*/
 }

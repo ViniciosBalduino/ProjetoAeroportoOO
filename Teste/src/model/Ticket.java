@@ -4,48 +4,27 @@
  */
 package model;
 
-import model.Passageiro;
 import java.time.LocalDate;
 /**
  *
  * @author vinic
  */
 public class Ticket {
-    private static int serial;
+    
     private int id;
     private int valor;
-    private Voo voo;
-    private Passageiro passageiro;
-    private VooAssentos vooAssentos;
-    private String codigoTicket;
+    private String idVoo;
+    private String nomePassageiro;
+    private String idVooAssento;
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
-    
-    public Ticket(Passageiro passageiro, Voo voo, VooAssentos vooAssentos){
-        this.id = ++Ticket.serial;
-        this.voo = voo;
-        this.passageiro = passageiro;
-        this.codigoTicket = "T-" + String.valueOf(id) + voo.getId() + "-00";
-        this.vooAssentos = vooAssentos;
-        this.dataCriacao = LocalDate.now();
-        this.dataModificacao = LocalDate.now();
-        this.valor = serial % 2 == 0 ? 50 : 100;
-    }
-    
-    public int getId(){
+
+    public int getId() {
         return id;
     }
 
-    public Passageiro getPassageiro() {
-        return passageiro;
-    }
-
-    public void setPassageiro(Passageiro passageiro) {
-        this.passageiro = passageiro;
-    }
-    
-    public Voo getVoo(){
-        return voo;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getValor() {
@@ -54,28 +33,57 @@ public class Ticket {
 
     public void setValor(int valor) {
         this.valor = valor;
-        this.dataModificacao = LocalDate.now();
     }
 
-    public String getCodigoTicket() {
-        return codigoTicket;
+    public String getIdVoo() {
+        return idVoo;
+    }
+
+    public void setIdVoo(String idVoo) {
+        this.idVoo = idVoo;
+    }
+
+    public String getNomePassageiro() {
+        return nomePassageiro;
+    }
+
+    public void setNomePassageiro(String nomePassageiro) {
+        this.nomePassageiro = nomePassageiro;
+    }
+
+    public String getIdVooAssento() {
+        return idVooAssento;
+    }
+
+    public void setIdVooAssento(String idVooAssento) {
+        this.idVooAssento = idVooAssento;
     }
 
     public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
+    public void setDataCriacao(LocalDate dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
     public LocalDate getDataModificacao() {
         return dataModificacao;
     }
+
+    public void setDataModificacao(LocalDate dataModificacao) {
+        this.dataModificacao = dataModificacao;
+    }
+    
+
     
     @Override
     public String toString(){
         
         String ticket = "\n--------------------------------";
-        ticket += "\nCodigo = " + this.codigoTicket;
-        ticket += "\nVoo = " + this.voo.getOrigem() + "-->" + this.voo.getDestino();
-        ticket += "\nPassageiro = " + this.passageiro.getNome();
+        ticket += "\nCodigo = " + this.id;
+        ticket += "\nVoo = " + this.idVoo;
+        ticket += "\nPassageiro = " + this.nomePassageiro;
         ticket += "\nValor = " + this.valor;
         ticket += "\nCompra efetuada em = " + this.dataCriacao;
         ticket += "\n--------------------------------\n";

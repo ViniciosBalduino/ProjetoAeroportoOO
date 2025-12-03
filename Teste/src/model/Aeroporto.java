@@ -22,13 +22,15 @@ public class Aeroporto {
     
      
     public Aeroporto(){
-        this.id = ++Aeroporto.serial;
-        this.dataCriacao = LocalDate.now();
-        this.dataModificacao = LocalDate.now();
+        
     }
 
     public int getId() {
         return id;
+    }
+    
+    public void setId(int id){
+        this.id = id;
     }
 
     public String getNome() {
@@ -61,9 +63,17 @@ public class Aeroporto {
     public LocalDate getDataCriacao() {
         return dataCriacao;
     }
+    
+    public void setDataCriacao(LocalDate dataCriacao){
+        this.dataCriacao = dataCriacao;
+    }
 
     public LocalDate getDataModificacao() {
         return dataModificacao;
+    }
+    
+    public void setDataModificacao(LocalDate dataModificacao){
+        this.dataModificacao = dataModificacao;
     }
 
     @Override

@@ -11,24 +11,36 @@ import java.time.LocalDate;
  * @author vinic
  */
 public class Checkin {
-    private static int serial;
+    
     private int id;
-    private Ticket ticket;
+    private String idTicket;
     private String documento;
+    private String estado;
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
-    private String estado;
-    
-    public Checkin(Ticket ticket, String documento){
-        this.id = ++Checkin.serial;
-        this.dataCriacao = LocalDate.now();
-        this.dataModificacao = LocalDate.now();
-        this.ticket = ticket;
-        this.estado = "Check in concluido";
-    }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getIdTicket() {
+        return idTicket;
+    }
+
+    public void setIdTicket(String idTicket) {
+        this.idTicket = idTicket;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
     }
 
     public String getEstado() {
@@ -38,35 +50,32 @@ public class Checkin {
     public void setEstado(String estado) {
         this.estado = estado;
     }
-    
-    public Ticket getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-        this.dataModificacao = LocalDate.now();
-
-    }
-
-    public String getDocumento() {
-        return documento;
-    }
 
     public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
+    public void setDataCriacao(LocalDate dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
     public LocalDate getDataModificacao() {
         return dataModificacao;
     }
+
+    public void setDataModificacao(LocalDate dataModificacao) {
+        this.dataModificacao = dataModificacao;
+    }
+
     
+
     @Override
     public String toString(){
         String checkin = "";
         checkin += "\nID = " + this.id;
         checkin += "\nDocumento = " + this.documento;
-        checkin += "\nTicket: " + this.ticket;
+        checkin += "\nID Ticket: " + this.idTicket;
+        checkin += "\nData de Checkin: " + this.dataCriacao;
         return checkin;
     }
 }

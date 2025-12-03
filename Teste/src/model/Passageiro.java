@@ -5,12 +5,10 @@
 package model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 
 public class Passageiro {
-    private static int serial;
+    
     private int id;
     private String nome;
     private LocalDate nascimento;
@@ -19,16 +17,13 @@ public class Passageiro {
     private String Senha;
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
-    
-    
-    public Passageiro(){
-        this.id = ++Passageiro.serial;
-        this.dataCriacao = LocalDate.now();
-        this.dataModificacao = LocalDate.now();
-    }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -37,7 +32,6 @@ public class Passageiro {
 
     public void setNome(String nome) {
         this.nome = nome;
-        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getNascimento() {
@@ -46,7 +40,6 @@ public class Passageiro {
 
     public void setNascimento(LocalDate nascimento) {
         this.nascimento = nascimento;
-        this.dataModificacao = LocalDate.now();
     }
 
     public String getDocumento() {
@@ -55,7 +48,6 @@ public class Passageiro {
 
     public void setDocumento(String documento) {
         this.documento = documento;
-        this.dataModificacao = LocalDate.now();
     }
 
     public String getLogin() {
@@ -64,7 +56,6 @@ public class Passageiro {
 
     public void setLogin(String login) {
         this.login = login;
-        this.dataModificacao = LocalDate.now();
     }
 
     public String getSenha() {
@@ -73,16 +64,25 @@ public class Passageiro {
 
     public void setSenha(String Senha) {
         this.Senha = Senha;
-        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
+    public void setDataCriacao(LocalDate dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
     public LocalDate getDataModificacao() {
         return dataModificacao;
     }
+
+    public void setDataModificacao(LocalDate dataModificacao) {
+        this.dataModificacao = dataModificacao;
+    }
+
+    
     
     public String recuperarLogin(){
         String passageiro = "";

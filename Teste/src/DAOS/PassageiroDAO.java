@@ -4,110 +4,119 @@
  */
 package DAOS;
 
+import Utils.ConnectionFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 import model.Passageiro;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 
 /**
  *
  * @author vinic
  */
 public class PassageiroDAO {
-    public Passageiro[] passageiros = new Passageiro[5];
 
     public PassageiroDAO() {
-        
-        Passageiro p1 = new Passageiro();
-        p1.setNome("Marineide da Silva");
-        p1.setNascimento(LocalDate.of(1996, 4, 26));
-        p1.setDocumento("16332165499");
-        p1.setLogin("MarineideGatinha");
-        p1.setSenha("Marineide123");
-        this.adicionaPassageiro(p1);
-        
-        Passageiro p2 = new Passageiro();
-        p2.setNome("Flavio Sauro");
-        p2.setNascimento(LocalDate.of(1996, 4, 26));
-        p2.setDocumento("96385274165");
-        p2.setLogin("123");
-        p2.setSenha("123");
-        this.adicionaPassageiro(p2);
-        
-        Passageiro p3 = new Passageiro();
-        p3.setNome("Felicia Cerebro e Pink");
-        p3.setNascimento(LocalDate.of(1996, 4, 26));
-        p3.setDocumento("74185296332");
-        p3.setLogin("FeliciaCP");
-        p3.setSenha("OQueVamosFazerHojeCerebro");
-        this.adicionaPassageiro(p3);
-    }    
+
+    }
     
-    public Passageiro buscarLoginPassageiro(String login, String senha){
-        for(int i=0; i<passageiros.length; i++){
-            if(passageiros[i]!=null && passageiros[i].getLogin().equals(login) && 
-                    passageiros[i].getSenha().equals(senha)){
-                return passageiros[i];
+    public Passageiro buscarPassageiroPorDocumento(String documento) {
+        String sql = "select * from passageiro where documento = ? limit 1";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, documento);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return construirPassageiro(rs);
+                }
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+
         return null;
     }
-    
-    public String buscarPassageiroPorID(int id){
-        boolean vazio = true;
-        String selecaoPassageiros = "";
-        for(int i=0; i<passageiros.length; i++){
-            if(passageiros[i]!=null && passageiros[i].getId() == id){
-                selecaoPassageiros += passageiros[i].toString();
-                vazio = false;
+
+
+    public Passageiro buscarLoginPassageiro(String login, String senha) {
+        String sql = "select * from passageiro where login = ? and senha = ? limit 1";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, login);
+            stmt.setString(2, senha);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return construirPassageiro(rs);
+                }
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        if(vazio){
-            selecaoPassageiros = "Nao existe passageiro com este ID cadastrado";
-        }
-        return selecaoPassageiros;
-    }
-    
-    public Passageiro buscarRetornarPassageiroPorID(int id){
-        for(int i=0; i<passageiros.length; i++){
-            if(passageiros[i]!=null && passageiros[i].getId() == id){
-                return passageiros[i];
-            }
-        }
+
         return null;
     }
-    
-    public String mostrarTodos(){
+
+    public String mostrarTodos() {
+        String sql = "select * from passageiro";
+        String resultado = "";
         boolean vazio = true;
-        String todosPassageiros = "";
-        for(int i=0; i<passageiros.length; i++){
-            if(passageiros[i] != null){
-                todosPassageiros += passageiros[i].toString();
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Passageiro p = construirPassageiro(rs);
+                resultado += p.toString();
                 vazio = false;
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        if(vazio){
-            todosPassageiros += "Nao existe nenhum passageiro cadastrado";
-        } 
-        return todosPassageiros;
+
+        if (vazio) {
+            resultado = "nao existe nenhum passageiro cadastrado";
+        }
+
+        return resultado;
     }
-    
-    public boolean adicionaPassageiro(Passageiro passageiro){
-        int posicao = this.posicaoLivre();
-        if(posicao != -1){
-            passageiros[posicao] = passageiro;
+
+    public boolean adicionaPassageiro(Passageiro passageiro) {
+        String sql = "insert into passageiro (nome, nascimento, documento, login, senha) values (?,?,?,?,?)";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql);) {
+
+            stmt.setString(1, passageiro.getNome());
+            stmt.setDate(2, java.sql.Date.valueOf(passageiro.getNascimento()));
+            stmt.setString(3, passageiro.getDocumento());
+            stmt.setString(4, passageiro.getLogin());
+            stmt.setString(5, passageiro.getSenha());
+            stmt.execute();
+            System.out.println("passageiro cadastrado.");
             return true;
-        } else{
-            return false;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
-        
-    private int posicaoLivre(){
-        for(int i=0; i<passageiros.length; i++){
-            if(passageiros[i] == null){
-                return i;
-            }
-        }
-        return -1;
+
+    private Passageiro construirPassageiro(ResultSet rs) throws SQLException {
+        Passageiro p = new Passageiro();
+        p.setId(rs.getInt("id"));
+        p.setNome(rs.getString("nome"));
+        p.setNascimento(rs.getDate("nascimento").toLocalDate());
+        p.setDocumento(rs.getString("documento"));
+        p.setLogin(rs.getString("login"));
+        p.setSenha(rs.getString("senha"));
+        p.setDataCriacao(rs.getDate("datacriacao").toLocalDate());
+        p.setDataModificacao(rs.getDate("datamodificacao").toLocalDate());
+        return p;
     }
+
 }

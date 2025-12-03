@@ -11,7 +11,7 @@ import java.time.LocalDate;
  * @author vitor
  */
 public class Funcionario {
-    private static int serial;
+    
     private int id;
     private String nome;
     private LocalDate nascimento;
@@ -21,14 +21,12 @@ public class Funcionario {
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
 
-    public Funcionario(){
-        this.id = ++Funcionario.serial;
-        this.dataCriacao = LocalDate.now();
-        this.dataModificacao = LocalDate.now();
-    }
-    
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -37,7 +35,6 @@ public class Funcionario {
 
     public void setNome(String nome) {
         this.nome = nome;
-        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getNascimento() {
@@ -46,7 +43,6 @@ public class Funcionario {
 
     public void setNascimento(LocalDate nascimento) {
         this.nascimento = nascimento;
-        this.dataModificacao = LocalDate.now();
     }
 
     public String getDocumento() {
@@ -55,7 +51,6 @@ public class Funcionario {
 
     public void setDocumento(String documento) {
         this.documento = documento;
-        this.dataModificacao = LocalDate.now();
     }
 
     public String getLogin() {
@@ -64,25 +59,33 @@ public class Funcionario {
 
     public void setLogin(String login) {
         this.login = login;
-        this.dataModificacao = LocalDate.now();
     }
 
     public String getSenha() {
         return senha;
     }
 
-    public void setSenha(String Senha) {
-        this.senha = Senha;
-        this.dataModificacao = LocalDate.now();
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
     public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
+    public void setDataCriacao(LocalDate dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
     public LocalDate getDataModificacao() {
         return dataModificacao;
     }
+
+    public void setDataModificacao(LocalDate dataModificacao) {
+        this.dataModificacao = dataModificacao;
+    }
+    
+
     
     @Override
     public int hashCode() {

@@ -4,10 +4,12 @@
  */
 package DAOS;
 
-import DAOS.PassageiroDAO;
 import model.Ticket;
-import java.time.LocalDate;
-import java.util.Date;
+import Utils.ConnectionFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 
 /**
  *
@@ -15,99 +17,151 @@ import java.util.Date;
  */
 public class TicketDAO {
 
-    Ticket[] tickets = new Ticket[20];
-
-    public TicketDAO(VooDAO voos, PassageiroDAO passageiros, VooAssentosDAO vooAssentos) {
-        Ticket tk1 = new Ticket(passageiros.buscarRetornarPassageiroPorID(1), voos.buscarRetornarVooPorID("Gal-V1"), vooAssentos.buscarAssentoPorVooEPassageiro("Gal-V1", 1));
-        this.adicionaTicket(tk1);
-
-        Ticket tk2 = new Ticket(passageiros.buscarRetornarPassageiroPorID(2), voos.buscarRetornarVooPorID("Gal-V1"), vooAssentos.buscarAssentoPorVooEPassageiro("Gal-V1", 2));
-        this.adicionaTicket(tk2);
-
-        Ticket tk3 = new Ticket(passageiros.buscarRetornarPassageiroPorID(3), voos.buscarRetornarVooPorID("Gal 2-V2"), vooAssentos.buscarAssentoPorVooEPassageiro("Gal 2-V2", 3));
-        this.adicionaTicket(tk3);
-
-    }
 
     public boolean adicionaTicket(Ticket ticket) {
-        int posicao = posicaoLivre();
-        if (posicao != -1) {
-            tickets[posicao] = ticket;
-            return true;
-        } else {
-            return false;
+        String sql = "insert into ticket (valor, idvoo, nomepassageiro, idvooassento, datacriacao, datamodificacao) "
+                + "values (?, ?, ?, ?, ?, ?)";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setInt(1, ticket.getValor());
+            stmt.setString(2, ticket.getIdVoo());
+            stmt.setString(3, ticket.getNomePassageiro());
+            stmt.setString(4, ticket.getIdVooAssento());
+            stmt.setDate(5, java.sql.Date.valueOf(ticket.getDataCriacao()));
+            stmt.setDate(6, java.sql.Date.valueOf(ticket.getDataModificacao()));
+
+            int linhas = stmt.executeUpdate();
+            return linhas > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
     
-    public boolean removeTicketPosCheckIn(String codigoTicket){
-        for(int i=0; i < tickets.length; i++){
-            if(tickets[i].getCodigoTicket().toLowerCase().trim().equals(codigoTicket.toLowerCase().trim())){
-                tickets[i] = null;
-                System.out.println("\nCheck-in realizado, entao ticket excluido.");
-                return true;
-            }
+    public boolean removeTicketPosCheckIn(int idTicket) {
+        String sql = "delete from ticket where id = ?";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setInt(1, idTicket);
+
+            int linhas = stmt.executeUpdate();
+            return linhas > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return false;
     }
 
-    public Ticket buscaTicket(String codigoTicket) {
-        Ticket ticketEncontrado;
-        for (Ticket ticket : tickets) {
-            if (ticket != null && ticket.getCodigoTicket().toLowerCase().trim().equals(codigoTicket.toLowerCase().trim())) {
-                System.out.println("Ticket encontrado");
-                System.out.println(ticket.toString());
-                ticketEncontrado = ticket;
-                return ticketEncontrado;
-            } 
-        }
-        System.out.println("Ticket nao encontrado.");
-        return null;
-    }
-    
-    public Ticket buscaTicketPassageiroVoo(int codigoPassageiro, String codigoVoo) {
-        for (Ticket ticket : tickets) {
-            if (ticket.getPassageiro().getId() == codigoPassageiro && ticket.getVoo().getId().toLowerCase().equals(codigoVoo)) {
-                System.out.println("Ticket encontrado");
-                return ticket;
-            } else {
-                System.out.println("Ticket nao encontrado.");
-                return null;
+    public Ticket buscaTicket(String idTicket) {
+        String sql = "select * from ticket where id = ? limit 1";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, idTicket);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return construirTicket(rs);
+                }
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return null;
     }
 
-    public String mostrarTicketsPorPassageiro(int idPassageiro) {
-        String ticketsPassageiro = "";
-        for (Ticket ticket : tickets) {
-            if (ticket != null && ticket.getPassageiro().getId() == idPassageiro) {
-                ticketsPassageiro += ticket;
+    public Ticket buscaTicketPassageiroVoo(String nomePassageiro, String idVoo) {
+        String sql = "select * from ticket where nomepassageiro = ? and idvoo = ? limit 1";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, nomePassageiro);
+            stmt.setString(2, idVoo);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return construirTicket(rs);
+                }
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return ticketsPassageiro;
+        return null;
+    }
+
+    public String mostrarTicketsPorPassageiro(String nomePassageiro) {
+        String sql = "select * from ticket where nomepassageiro = ?";
+        String resultado = "";
+        boolean vazio = true;
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, nomePassageiro);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    resultado += construirTicket(rs).toString() + "\n";
+                    vazio = false;
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (vazio) {
+            resultado = "nenhum ticket encontrado para este passageiro.";
+        }
+
+        return resultado;
     }
 
     public String mostrarTodos() {
+        String sql = "select * from ticket";
+        String todos = "";
         boolean vazio = true;
-        String todosTickets = "";
-        for (int i = 0; i < tickets.length; i++) {
-            if (tickets[i] != null) {
-                todosTickets += tickets[i].toString() + "\n---x----x---x---x---x---x---\n";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                todos += construirTicket(rs).toString() + "\n---x----x---x---x---x---x---\n";
                 vazio = false;
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+
         if (vazio) {
-            todosTickets += "Nenhum ticket foi gerado.";
+            todos = "nenhum ticket foi gerado.";
         }
-        return todosTickets;
+
+        return todos;
     }
 
-    private int posicaoLivre() {
-        for (int i = 0; i < tickets.length; i++) {
-            if (tickets[i] == null) {
-                return i;
-            }
+    private Ticket construirTicket(ResultSet rs) throws SQLException {
+        Ticket t = new Ticket();
+
+        t.setId(rs.getInt("id"));
+        t.setValor(rs.getInt("valor"));
+        t.setIdVoo(rs.getString("idvoo"));
+        t.setNomePassageiro(rs.getString("nomepassageiro"));
+        t.setIdVooAssento(rs.getString("idvooassento"));
+
+        java.sql.Date dc = rs.getDate("datacriacao");
+        if (dc != null) {
+            t.setDataCriacao(dc.toLocalDate());
         }
-        return -1;
+
+        java.sql.Date dm = rs.getDate("datamodificacao");
+        if (dm != null) {
+            t.setDataModificacao(dm.toLocalDate());
+        }
+
+        return t;
     }
 }

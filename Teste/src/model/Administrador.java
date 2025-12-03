@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 
 public class Administrador {
-    private static int serial;
+    
     private int id;
     private String nome;
     private LocalDate nascimento;
@@ -20,9 +20,19 @@ public class Administrador {
     
     
     public Administrador(){
-        this.id = ++Administrador.serial;
-        this.dataCriacao = LocalDate.now();
-        this.dataModificacao = LocalDate.now();
+        
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setDataCriacao(LocalDate dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public void setDataModificacao(LocalDate dataModificacao) {
+        this.dataModificacao = dataModificacao;
     }
 
     public int getId() {

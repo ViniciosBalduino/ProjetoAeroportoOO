@@ -4,6 +4,12 @@
  */
 package DAOS;
 
+import Utils.ConnectionFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import model.Administrador;
 import model.DespachoBagagem;
 
 /**
@@ -11,8 +17,10 @@ import model.DespachoBagagem;
  * @author vitor
  */
 public class DespachoBagagemDAO {
-    DespachoBagagem[] despachos = new DespachoBagagem[60];
+    //DespachoBagagem[] despachos = new DespachoBagagem[60];
     
+    
+    /*
     public boolean adicionaDespachoBagagem(DespachoBagagem despacho){
         int posicao = posicaoLivre();
         if(posicao != -1){
@@ -22,7 +30,27 @@ public class DespachoBagagemDAO {
             return false;
         }
     }
+    */
     
+     public boolean adicionaDespachoBagagem(DespachoBagagem despacho) {
+        String sql = "insert into despachobagagem (id, idTicket) values (?,?)";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, despacho.getId());
+            stmt.setString(2, despacho.getTicket());
+
+            stmt.execute();
+            System.out.println("Nova bagagem despachada.");
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
+    }
+    
+     /*
     public String mostrarTodos(){
         boolean vazio = true;
         String todosDespachos = "";
@@ -37,7 +65,35 @@ public class DespachoBagagemDAO {
         } 
         return todosDespachos;
     }
+    */
     
+    public String mostrarTodos() {
+        String sql = "select id, idTicket from despachobagagem";
+        String todasBagagens = "";
+        boolean vazio = true;
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                todasBagagens += rs.getString("id")
+                        + " - "
+                        + rs.getString("idTicket")
+                        + " | ";
+                vazio = false;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (vazio) {
+            todasBagagens = "Nao existe nenhuma bagagem cadastrada";
+        }
+
+        return todasBagagens;
+    }
+    
+    /*
     private int posicaoLivre(){
         for(int i=0; i<despachos.length; i++){
             if(despachos[i] == null){
@@ -46,4 +102,5 @@ public class DespachoBagagemDAO {
         }
         return -1;
     }
+    */
 }

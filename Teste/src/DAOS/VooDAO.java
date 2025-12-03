@@ -4,10 +4,13 @@
  */
 package DAOS;
 
-import DAOS.CompAereaDAO;
+import Utils.ConnectionFactory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 import model.Voo;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.Month;
 
 /**
@@ -15,128 +18,173 @@ import java.time.Month;
  * @author vinic
  */
 public class VooDAO {
-    Voo[] voos = new Voo[15];
 
-    public VooDAO(CompAereaDAO companhias) {
-                        
-        Voo v1 = new Voo(companhias.buscarRetornarCompSigla(("Gal").toUpperCase()));
-        v1.setOrigem("Uberaba");
-        v1.setDestino("Uberlandia");
-        v1.setData(LocalDate.of(2025, 10, 26));
-        v1.setDuracao(LocalTime.of(1, 0));
-        v1.setCapacidade(5);
-        v1.setEstado("programado");
-        this.adicionaVoo(v1);
-        
-        /*Voo v4 = new Voo(companhias.buscarRetornarCompSigla(("Gal").toUpperCase()));
-        v1.setOrigem("Uberaba");
-        v1.setDestino("Uberlandia");
-        v1.setData(LocalDate.of(2025, 10, 10));
-        v1.setDuracao(LocalTime.of(1, 0));
-        v1.setCapacidade(5);
-        this.adicionaVoo(v4);*/
-               
-        Voo v2 = new Voo(companhias.buscarRetornarCompSigla(("Gal 2").toUpperCase()));
-        v2.setOrigem("Delta");
-        v2.setDestino("Araguari");
-        v2.setData(LocalDate.of(2025, 10, 26));
-        v2.setDuracao(LocalTime.of(0, 10));
-        v2.setCapacidade(3);
-        v2.setEstado("programado");
-        this.adicionaVoo(v2);
-        
-        Voo v3 = new Voo(companhias.buscarRetornarCompSigla(("Gal 3").toUpperCase()));
-        v3.setOrigem("Ponte Alta");
-        v3.setDestino("Peiropolis");
-        v3.setData(LocalDate.of(2025, 10, 27));
-        v3.setDuracao(LocalTime.of(01, 0));
-        v3.setCapacidade(1);
-        v3.setEstado("programado");
-        this.adicionaVoo(v3);
-        
-    }    
-    
-    public String buscarVooPorIDString(String IDVoo){
+    private Voo construirVoo(ResultSet rs) throws SQLException {
+        Voo v = new Voo(rs.getString("companhia"));
+        v.setId(rs.getString("id"));
+        v.setOrigem(rs.getString("origem"));
+        v.setDestino(rs.getString("destino"));
+        v.setData(rs.getDate("data").toLocalDate());
+        v.setDuracao(rs.getTime("duracao").toLocalTime());
+        v.setHorario(rs.getTime("horario").toLocalTime());
+        v.setSiglaCompanhia(rs.getString("siglacompanhia"));
+        v.setCapacidade(rs.getInt("capacidade"));
+        v.setEstado(rs.getString("estado"));
+        v.setDataCriacao(rs.getDate("datacriacao").toLocalDate());
+        v.setDataModificacao(rs.getDate("datamodificacao").toLocalDate());
+        return v;
+    }
+
+    public String buscarVooPorIDString(String idVoo) {
+        String sql = "select * from voo where id = ?";
+        String resultado = "nao existe voo com este id cadastrado";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, idVoo);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Voo v = construirVoo(rs);
+                    resultado = v.toString();
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return resultado;
+    }
+
+    public Voo buscarVooPorDestinoString(String destinoVoo) {
+        String sql = "select * from voo where destino = ? limit 1";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, destinoVoo);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return construirVoo(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
+    public Voo buscarVooPorPartidaString(String partidaVoo) {
+        String sql = "select * from voo where origem = ? limit 1";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, partidaVoo);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return construirVoo(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
+    public Voo buscarVooPorData(String data) {
+        String sql = "select * from voo where data = ? limit 1";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setDate(1, java.sql.Date.valueOf(data));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return construirVoo(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
+    public Voo buscarRetornarVooPorID(String idVoo) {
+        String sql = "select * from voo where id = ?";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, idVoo);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return construirVoo(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
+    public String mostrarTodos() {
+        String sql = "select * from voo";
+        String resultado = "";
         boolean vazio = true;
-        String selecaoVoos = "";
-        for(int i=0; i<voos.length; i++){
-            if(voos[i]!=null && voos[i].getId().toUpperCase().equals((IDVoo).toUpperCase())){
-                selecaoVoos += voos[i].toString();
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Voo v = construirVoo(rs);
+                resultado += v.toString() + "--------------------------";
                 vazio = false;
             }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        if(vazio){
-            selecaoVoos = "Nao existe voo com este ID cadastrado";
+
+        if (vazio) {
+            resultado = "nao existe nenhum voo cadastrado";
         }
-        return selecaoVoos;
+
+        return resultado;
     }
-    
-    public Voo buscarVooPorDestinoString(String DestinoVoo){
-        for(int i=0; i<voos.length; i++){
-            if(voos[i]!=null && voos[i].getDestino().toUpperCase().equals((DestinoVoo).toUpperCase())){
-                return voos[i];
-            }
+
+    public boolean adicionaVoo(Voo voo) {
+        String sql = "insert into voo (id, origem, destino, data, duracao, horario, siglacompanhia, capacidade, estado) "
+                + "values (?,?,?,?,?,?,?,?)";
+
+        try (Connection con = new ConnectionFactory().getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, voo.getId());
+            stmt.setString(2, voo.getOrigem());
+            stmt.setString(3, voo.getDestino());
+            stmt.setDate(4, java.sql.Date.valueOf(voo.getData()));
+            stmt.setTime(5, java.sql.Time.valueOf(voo.getDuracao()));
+            stmt.setTime(6, java.sql.Time.valueOf(voo.getHorario()));
+            stmt.setString(6, voo.getSiglaCompanhia());
+            stmt.setInt(7, voo.getCapacidade());
+            stmt.setString(8, voo.getEstado());
+
+            stmt.execute();
+            System.out.println("Novo voo adicionado.");
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return null;
+
+        return false;
     }
-    
-        public Voo buscarVooPorPartidaString(String PartidaVoo){
-        for(int i=0; i<voos.length; i++){
-            if(voos[i]!=null && voos[i].getOrigem().toUpperCase().equals((PartidaVoo).toUpperCase())){
-                return voos[i];
-            }
-        }
-        return null;
-    }
-        
-    public Voo buscarVooPorData(String data){
-        for(int i=0; i<voos.length; i++){
-            if(voos[i]!=null && voos[i].getData().toString().equals(data))
-                return voos[i];
-        }
-        return null;
-    }
-    
-    public Voo buscarRetornarVooPorID(String IDVoo){
-        for(int i=0; i<voos.length; i++){
-            if(voos[i]!=null && voos[i].getId().toUpperCase().equals((IDVoo).toUpperCase())){
-                return voos[i];
-            }
-        }
-        return null;
-    }
-    
-    public String mostrarTodos(){
-        boolean vazio = true;
-        String todosVoos = "";
-        for(int i=0; i<voos.length; i++){
-            if(voos[i] != null){
-                todosVoos += voos[i].toString() + "--------------------------";
-                vazio = false;
-            }
-        }
-        if(vazio){
-            todosVoos += "Nao existe nenhum voo cadastrado";
-        } 
-        return todosVoos;
-    }
-    
-    public boolean adicionaVoo(Voo voo){
-        int posicao = this.posicaoLivre();
-        if(posicao != -1){
-            voos[posicao] = voo;
-            return true;
-        } else{
-            return false;
-        }
-    }
-        
-    private int posicaoLivre(){
-        for(int i=0; i<voos.length; i++){
-            if(voos[i] == null){
-                return i;
-            }
-        }
-        return -1;
-    }
+
 }

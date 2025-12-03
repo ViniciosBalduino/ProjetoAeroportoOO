@@ -4,9 +4,7 @@
  */
 package model;
 
-import model.CompAerea;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -16,37 +14,28 @@ import java.util.Objects;
  */
 public class Voo {
 
-    private static int serial;
     private String id;
     private String origem;
     private String destino;
     private LocalDate data;
     private LocalTime duracao;
-    private CompAerea companhia;
+    private LocalTime horario;
+    private String siglaCompanhia;
     private int capacidade;
     private String estado;
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
 
-    public Voo(CompAerea companhia) {
-        if (companhia != null) {
-            this.id = companhia.getAbreviacao() + "-V" + ++serial;
-            this.companhia = companhia;
-        } else {
-            this.id = String.valueOf(++serial);
-            CompAerea compGen = new CompAerea();
-            compGen.setNome("Companhia Generica, deve ser substituida assim que possivel");
-            compGen.setAbreviacao("GEN");
-            this.companhia = compGen;
-        }
-        this.dataCriacao = LocalDate.now();
-        this.dataModificacao = LocalDate.now();
+    public Voo(String companhia){
+        this.siglaCompanhia = companhia;
     }
     
-    public Voo(){};
-
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getOrigem() {
@@ -55,7 +44,6 @@ public class Voo {
 
     public void setOrigem(String origem) {
         this.origem = origem;
-        this.dataModificacao = LocalDate.now();
     }
 
     public String getDestino() {
@@ -64,7 +52,6 @@ public class Voo {
 
     public void setDestino(String destino) {
         this.destino = destino;
-        this.dataModificacao = LocalDate.now();
     }
 
     public LocalDate getData() {
@@ -73,7 +60,6 @@ public class Voo {
 
     public void setData(LocalDate data) {
         this.data = data;
-        this.dataModificacao = LocalDate.now();
     }
 
     public LocalTime getDuracao() {
@@ -82,16 +68,23 @@ public class Voo {
 
     public void setDuracao(LocalTime duracao) {
         this.duracao = duracao;
-        this.dataModificacao = LocalDate.now();
     }
 
-    public CompAerea getCompanhia() {
-        return companhia;
+    public LocalTime getHorario() {
+        return horario;
     }
 
-    public void setCompanhia(CompAerea companhia) {
-        this.companhia = companhia;
-        this.dataModificacao = LocalDate.now();
+    public void setHorario(LocalTime horario) {
+        this.horario = horario;
+    }
+    
+
+    public String getSiglaCompanhia() {
+        return siglaCompanhia;
+    }
+
+    public void setSiglaCompanhia(String siglaCompanhia) {
+        this.siglaCompanhia = siglaCompanhia;
     }
 
     public int getCapacidade() {
@@ -100,7 +93,6 @@ public class Voo {
 
     public void setCapacidade(int capacidade) {
         this.capacidade = capacidade;
-        this.dataModificacao = LocalDate.now();
     }
 
     public String getEstado() {
@@ -109,8 +101,25 @@ public class Voo {
 
     public void setEstado(String estado) {
         this.estado = estado;
-        this.dataModificacao = LocalDate.now();
     }
+
+    public LocalDate getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDate dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public LocalDate getDataModificacao() {
+        return dataModificacao;
+    }
+
+    public void setDataModificacao(LocalDate dataModificacao) {
+        this.dataModificacao = dataModificacao;
+    }
+
+  
 
     @Override
     public int hashCode() {
@@ -138,11 +147,12 @@ public class Voo {
     public String toString() {
         String voo = "";
         voo += "\nID = " + this.id;
-        voo += "\nCompanhia = " + this.companhia.getAbreviacao();
-        voo += "\nOrigem em = " + this.origem;
-        voo += "\nDestino em = " + this.destino;
+        voo += "\nCompanhia = " + this.siglaCompanhia;
+        voo += "\nOrigem = " + this.origem;
+        voo += "\nDestino = " + this.destino;
         voo += "\nDia do voo = " + this.data;
-        voo += "\nTempo do voo = " + this.duracao;
+        voo += "\nHorario = " + this.horario;
+        voo += "\nDuracao = " + this.duracao;
         voo += "\nCapacidade do voo = " + this.capacidade;
         voo += "\nStatus = " + this.estado;
         voo += "\n";
