@@ -108,7 +108,7 @@ public class PassageiroDAO {
 
     private Passageiro construirPassageiro(ResultSet rs) throws SQLException {
         Passageiro p = new Passageiro();
-        p.setId(rs.getInt("id"));
+        p.setId(rs.getString("id"));
         p.setNome(rs.getString("nome"));
         p.setNascimento(rs.getDate("nascimento").toLocalDate());
         p.setDocumento(rs.getString("documento"));

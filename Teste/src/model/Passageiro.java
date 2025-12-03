@@ -5,11 +5,12 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 
 public class Passageiro {
     
-    private int id;
+    private String id;
     private String nome;
     private LocalDate nascimento;
     private String documento;
@@ -18,11 +19,11 @@ public class Passageiro {
     private LocalDate dataCriacao;
     private LocalDate dataModificacao;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -106,7 +107,7 @@ public class Passageiro {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 71 * hash + this.id;
+        hash = 47 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -122,8 +123,10 @@ public class Passageiro {
             return false;
         }
         final Passageiro other = (Passageiro) obj;
-        return this.id == other.id;
+        return Objects.equals(this.id, other.id);
     }
+
+  
     
     @Override
     public String toString() {

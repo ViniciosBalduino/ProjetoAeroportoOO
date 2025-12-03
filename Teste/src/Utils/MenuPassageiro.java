@@ -82,9 +82,16 @@ public class MenuPassageiro {
                     if (vooAssentosDAO.contarAssentosPorVoo(idVoo) >= vooEscolhido.getCapacidade()) {
                         System.out.println("\nVoo sem assentos disponiveis, por favor busque outro.");
                     } else {
-                        VooAssentos assentoNovo = new VooAssentos(vooEscolhido, pLogado);
+                        //VooAssentos assentoNovo = new VooAssentos(vooEscolhido, pLogado);
+                        VooAssentos assentoNovo = new VooAssentos();
+                        assentoNovo.setIdPassageiro(String.valueOf(pLogado.getId()));
+                        assentoNovo.setIdVoo(idVoo);
                         vooAssentosDAO.adicionaVooAssentos(assentoNovo);
-                        Ticket novoTicket = new Ticket(pLogado, vooEscolhido, assentoNovo);
+                        //Ticket novoTicket = new Ticket(pLogado, vooEscolhido, assentoNovo);
+                        Ticket novoTicket = new Ticket();
+                        novoTicket.setIdVoo(idVoo);
+                        novoTicket.setNomePassageiro(pLogado.getNome());
+                        novoTicket.setIdVooAssento(assentoNovo.getIdAssento());
                         ticketDAO.adicionaTicket(novoTicket);
                         System.out.println("PASSAGEM COMPRADA COM SUCESSO.");
                     }
@@ -95,14 +102,15 @@ public class MenuPassageiro {
                     System.out.println("2 - Listar seu historico de passagens");
                     //System.out.println(pLogado.getId());
                     //System.out.println(tickets.mostrarTodos());
-                    System.out.println(ticketDAO.mostrarTicketsPorPassageiro(pLogado.getId()));
+                    System.out.println(ticketDAO.mostrarTicketsPorPassageiro(pLogado.getNome()));
                     break;
                 }
                 case 3: {
                     //Faz Check-In
                     System.out.println("Esses sao seus tickets disponiveis para check-in: ");
-                    System.out.println(ticketDAO.mostrarTicketsPorPassageiro(pLogado.getId()));
-                    if (ticketDAO.mostrarTicketsPorPassageiro(pLogado.getId()).equals("")) {
+                    System.out.println(ticketDAO.mostrarTicketsPorPassageiro(pLogado.getNome()));
+                    //System.out.println(ticketDAO.mostrarTicketsPorPassageiro(pLogado.getNome()));
+                    if (ticketDAO.mostrarTicketsPorPassageiro(pLogado.getNome()).equals("")) {
                         System.out.println("\nNao ha tickets disponiveis para fazer check-in.");
                         break;
                     }
@@ -110,21 +118,27 @@ public class MenuPassageiro {
                     String codigoTicket = scanner.nextLine();
                     Ticket ticketEscolhido = ticketDAO.buscaTicket(codigoTicket);
                     if (ticketEscolhido != null) {
-                        VooAssentos assentoCheckIn = vooAssentosDAO.buscarAssentoPorVooEPassageiro(ticketEscolhido.getVoo().getId(), pLogado.getId());
+                        VooAssentos assentoCheckIn = vooAssentosDAO.buscarAssentoPorVooEPassageiro(ticketEscolhido.getIdVooAssento(), pLogado.getId());
                         LocalDate hoje = LocalDate.now();
-                        LocalDate diaVoo = ticketEscolhido.getVoo().getData();
+                        LocalDate diaVoo = vooDAO.buscarRetornarVooPorID(assentoCheckIn.getIdVoo()).getData();
                         if (diaVoo.equals(hoje) || diaVoo.equals(hoje.plusDays(1))) {
-                            Checkin novoCheckin = new Checkin(ticketEscolhido, pLogado.getDocumento());
+                            //Checkin novoCheckin = new Checkin(ticketEscolhido, pLogado.getDocumento());
+                            Checkin novoCheckin = new Checkin();
+                            novoCheckin.setIdTicket(codigoTicket);
+                            novoCheckin.setDocumento(pLogado.getDocumento());
                             checkinDAO.adicionaCheckin(novoCheckin);
                             BoardingPass novoBoardingPass = new BoardingPass();
                             novoBoardingPass.setNomePassageiro(pLogado.getNome());
-                            novoBoardingPass.setIdVoo(ticketEscolhido.getVoo().getId());
-                            novoBoardingPass.setIdTicket(ticketEscolhido.getCodigoTicket());
+                            //novoBoardingPass.setIdVoo(ticketEscolhido.getVoo().getId());
+                            novoBoardingPass.setIdVoo(ticketEscolhido.getIdVoo());
+                            //novoBoardingPass.setIdTicket(ticketEscolhido.getCodigoTicket());
+                            novoBoardingPass.setIdTicket(String.valueOf(ticketEscolhido.getId()));
                             novoBoardingPass.setIdAssento(assentoCheckIn.getIdAssento());
                             novoBoardingPass.setNumeroAssento(assentoCheckIn.getValor());
                             boardingPassDAO.adicionaBoardingPass(novoBoardingPass);
                             System.out.println("Check-in realizado! Seu cartao de embarque:\n" + novoBoardingPass.toString());
-                            ticketDAO.removeTicketPosCheckIn(ticketEscolhido.getCodigoTicket());
+                            //ticketDAO.removeTicketPosCheckIn(ticketEscolhido.getCodigoTicket());
+                            ticketDAO.removeTicketPosCheckIn(ticketEscolhido.getId());
                             ticketEscolhido = null;
                             //System.out.println("mostrando chckins");
                             //System.out.println(checkins.mostrarTodos());

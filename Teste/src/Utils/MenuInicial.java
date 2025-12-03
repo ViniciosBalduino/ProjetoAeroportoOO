@@ -215,9 +215,17 @@ public class MenuInicial {
                                                     novoPassageiroLogado = passDAO.buscarLoginPassageiro(novoLogin, novaSenha);
                                                 }
                                                 if (novoPassageiroLogado != null) {
-                                                    VooAssentos novoAssento = new VooAssentos(vooPretendido, novoPassageiroLogado);
+                                                    //VooAssentos novoAssento = new VooAssentos(vooPretendido, novoPassageiroLogado);
+                                                    VooAssentos novoAssento = new VooAssentos();
+                                                    novoAssento.setIdVoo(vooPretendido.getId());
+                                                    novoAssento.setIdPassageiro(String.valueOf(novoPassageiroLogado.getId()));
                                                     assentosDAO.adicionaVooAssentos(novoAssento);
-                                                    Ticket novoTicket = new Ticket(novoPassageiroLogado, vooPretendido, novoAssento);
+                                                    //Ticket novoTicket = new Ticket(novoPassageiroLogado, vooPretendido, novoAssento);
+                                                    Ticket novoTicket = new Ticket();
+                                                    novoTicket.setIdVoo(vooPretendido.getId());
+                                                    novoTicket.setNomePassageiro(novoPassageiroLogado.getNome());
+                                                    novoTicket.setIdVooAssento(novoAssento.getIdAssento());
+                        
                                                     ticketDAO.adicionaTicket(novoTicket);
                                                     System.out.println("\nPassagem adquirida com sucesso, a passagem ja se encontra na sua conta\n");
                                                 } else {
